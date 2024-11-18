@@ -1,26 +1,22 @@
-const { StatusCodes } = require('http-status-codes'); 
-const wrapper = require('express-async-handler'); 
-const jwt = require('jsonwebtoken'); 
+const { StatusCodes } = require('http-status-codes');
+const wrapper = require('express-async-handler');
+const jwt = require('jsonwebtoken');
 
 
 const validateToken = wrapper(async (req, res, next) => {
-    const { token } = req.body;
-    if (!token || !token.startsWith('Bearer')) {
-        res.status(StatusCodes.UNAUTHORIZED).json({ error: 'Access Denied , no token provided' }); 
+    const { authorization } = req.headers;  
+    if (!authorization || !authorization.startsWith('Bearer')) {
+        return res.status(StatusCodes.UNAUTHORIZED).json({ msg: 'Invalid or no token provided' }); 
     }
-
-    try {
-        const verifiedToken = await jwt.verify(token, process.env.JWT_SECRET);
-        if (!verifiedToken) {
-            return res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Invalid or expired Token' }); 
-        }
-        const { userId } = verifiedToken; 
-        req.user = userId; 
+    const token = authorization.split(' ')[1]; 
+    console.log(token); 
+    if (token) {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET); 
+        const { userId } = decoded; 
+        req.userId = userId;  
         next(); 
-    } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "something went wrong ! , please try again later" }); 
-    } 
-}); 
+    }
+});
 
 
 module.exports = validateToken; 
