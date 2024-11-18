@@ -9,7 +9,8 @@ const corsOptions = {
 
 
 // all imports 
-const {  sequelize } = require('./models'); 
+const { sequelize } = require('./models'); 
+const authRoutes = require('./routes/auth'); 
 
 
 
@@ -18,6 +19,10 @@ const {  sequelize } = require('./models');
 // middlewares 
 app.use(express.json()); 
 app.use(cors(corsOptions));
+
+// endpoints 
+app.use('/api', authRoutes); 
+
 
 
 const port = process.env.PORT || 8000; 
