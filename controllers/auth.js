@@ -2,6 +2,7 @@ const { StatusCodes } = require('http-status-codes');
 const wrapper = require('express-async-handler'); 
 const { User, Sequelize } = require('../models'); 
 const jwt = require('jsonwebtoken'); 
+const { ValidationError } = require('sequelize');
 
 const register = wrapper(async (req , res ) => {
     const { username, email, password } = req.body; 
@@ -10,14 +11,16 @@ const register = wrapper(async (req , res ) => {
     }
     try {
         await User.create({ username, email, password }); 
-        res.status(StatusCodes.CREATED).json({ message: "registration Successful" }); 
+        res.status(StatusCodes.CREATED).json({ message: "registration Successful" });
     } catch (error) {
-        if (error instanceof Sequelize.ValidationError) {
-            res.status(StatusCodes.BAD_REQUEST).json({ error : error.errors[0].message });  
+        if (error instanceof ValidationError) {
+            return res.status(StatusCodes.BAD_REQUEST).json({ error: error.errors[0].message }); 
         }
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error : error.message }); 
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'sorry something went wrong , try again later/!' }); 
     }
-});
+         
+    }
+);
 
 
 const login = wrapper(async (req, res) => {
@@ -25,7 +28,7 @@ const login = wrapper(async (req, res) => {
     if (!email || !password) {
         return res.status(StatusCodes.BAD_REQUEST).json({ error: "Both email and password fields are required" }); 
     }
-    try {
+ 
         const user = await User.findOne({ where: { email } }); 
         if (!user) {
            return  res.status(StatusCodes.UNAUTHORIZED).json({ error: "No user with this email found" }); 
@@ -42,17 +45,7 @@ const login = wrapper(async (req, res) => {
                 userEmail: user.email,
                 token
             }
-        }); 
-    } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message }); 
-    }
-  
-
-   
-
-
-    
-    
+        });  
 }); 
 
 

@@ -11,6 +11,9 @@ const corsOptions = {
 // all imports 
 const { sequelize } = require('./models'); 
 const authRoutes = require('./routes/auth'); 
+const mainRoutes = require('./routes/main'); 
+const errorhandler = require('./middlewares/errorhandler'); 
+
 
 
 
@@ -22,8 +25,14 @@ app.use(cors(corsOptions));
 
 // endpoints 
 app.use('/api', authRoutes); 
+app.use('/api', mainRoutes); 
 
 
+
+
+
+// error handler middleware 
+app.use(errorhandler); 
 
 const port = process.env.PORT || 8000; 
 
