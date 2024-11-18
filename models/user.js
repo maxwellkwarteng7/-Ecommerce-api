@@ -32,15 +32,15 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'User',
     hooks: {
-      beforeCreate: (user) => {
-        const salt = bcrypt.genSalt(10); 
-        user.password = bcrypt.hash(user.password, salt); 
+      beforeCreate: async (user) => {
+        const salt = await bcrypt.genSalt(10); 
+        user.password = await bcrypt.hash(user.password,salt); 
       }
     }
   });
 
   User.prototype.validatePassword = async (rawpassword, hashedPassword) => {
-    const isPasswordMatch = bcrypt.compare(rawpassword, hashedPassword); 
+    const isPasswordMatch = await bcrypt.compare(rawpassword, hashedPassword); 
     return isPasswordMatch;
   }
 
