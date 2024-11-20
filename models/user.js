@@ -12,6 +12,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      User.hasOne(models.oneTimePin, {
+        as: 'forgotPasswordPin', 
+        foreignKey: 'userId', 
+        onDelete: "CASCADE",
+      })
     }
   }
   User.init({

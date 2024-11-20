@@ -13,6 +13,7 @@ const { sequelize } = require('./models');
 const authRoutes = require('./routes/auth'); 
 const mainRoutes = require('./routes/main'); 
 const errorhandler = require('./middlewares/errorhandler'); 
+const redisClient = require('./service/redis'); 
 
 
 
@@ -35,6 +36,7 @@ app.use('/api', mainRoutes);
 app.use(errorhandler); 
 
 const port = process.env.PORT || 8000; 
+redisClient.connect(); 
 
 app.listen(port, async () => {
     await sequelize.authenticate().then(() => console.log('database connected')).catch((error) => console.log(error)); 
