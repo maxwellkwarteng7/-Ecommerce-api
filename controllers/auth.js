@@ -1,12 +1,13 @@
 const { StatusCodes } = require('http-status-codes');
 const wrapper = require('express-async-handler');
-const { User, Sequelize } = require('../models');
+const { User, oneTimePin ,  Sequelize } = require('../models');
 const jwt = require('jsonwebtoken');
-const { ValidationError } = require('sequelize');
+const { ValidationError, Model } = require('sequelize');
 const client = require('../service/redis');
 const { restart } = require('nodemon');
 const send6digitCode = require('../utils/mailSender');
 const emailService = require('../service/emailService');
+ 
 
 const register = wrapper(async (req, res) => {
     const { username, email, password } = req.body;
@@ -92,9 +93,42 @@ const initiateResetPassword = wrapper(async (req , res ) => {
     res.status(StatusCodes.OK).json({ message: 'Email has been sent' }); 
 }); 
 
+//change or reset password 
+const resetPassword = wrapper(async (req, res) => {
+    const { pin , email , password} = req.body;
+    if (!pin || !email || !password) {
+       return  res.status(StatusCodes.BAD_REQUEST).json({ error: "pin ,  password and email fields are required" }); 
+    }
+    // fetch the usr 
+    const user = await User.findOne({
+        where: { email }, include: [
+            {
+                model: oneTimePin, 
+                as : 'forgotPasswordPin'
+        }
+    ] }); 
+    if (!user) {
+       return  res.status(StatusCodes.NOT_FOUND).json({ error: "No user with this email found" }); 
+    }
+    const currentTime = new Date(); 
+
+    if (!user.forgotPasswordPin.pin === pin || user.forgotPasswordPin.expiresIn < currentTime) {
+        return res.status(StatusCodes.UNAUTHORIZED).json({ error: 'invalid or expired pin ' }); 
+    }
+
+    user.password = password; 
+    user.save(); 
+    res.status(StatusCodes.OK).json({ message: "password changed successful" }); 
+    // checking if the pin entered is equal to the onetimepin 
+   
+
+  
+}); 
+
 module.exports = {
     register,
     login,
     logout, 
-    initiateResetPassword
+    initiateResetPassword, 
+    resetPassword
 }
