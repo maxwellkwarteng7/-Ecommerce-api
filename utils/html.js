@@ -1,4 +1,4 @@
-const customHtml = (username, pin) => {
+const customHtml = (username, pin , message) => {
     const htmlContent = `
         <!DOCTYPE html>
         <html>
@@ -40,7 +40,7 @@ const customHtml = (username, pin) => {
             </div>
             <div class="content">
               <p>Hello ${username},</p>
-              <p>Enter <span class="pin">${pin}</span> to reset your password. Thank You</p>
+              <p>Enter <span class="pin">${pin}</span> to ${message} ,Thank You</p>
               <p>This pin is valid for 5 minutes</p>
             </div>
             <div class="footer">

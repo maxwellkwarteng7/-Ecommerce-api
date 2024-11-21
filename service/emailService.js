@@ -2,7 +2,7 @@ const { PinGenerator, add5Minutes, html, mailSender } = require("../utils");
 const { oneTimePin } = require('../models');
 
 
-const emailService = async (user , subject) => {
+const emailService = async (user , subject , message) => {
     // generate one time passsword
     const pin = PinGenerator(); 
     // add minutes to current time
@@ -16,7 +16,7 @@ const emailService = async (user , subject) => {
         expiresIn,
     });
     // send pin  to user email
-     mailSender([user.email], subject, html(user.username, pin));
+     mailSender([user.email], subject, html(user.username, pin , message));
 };
 
 module.exports = emailService;
