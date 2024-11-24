@@ -11,10 +11,10 @@ const corsOptions = {
 // all imports 
 const { sequelize } = require('./models'); 
 const authRoutes = require('./routes/auth'); 
-const mainRoutes = require('./routes/main'); 
+const homeRoutes = require('./routes/main'); 
 const errorhandler = require('./middlewares/errorhandler'); 
 const redisClient = require('./service/redis'); 
-
+const ProductsRoute = require('./routes/products'); 
 
 
 
@@ -26,7 +26,8 @@ app.use(cors(corsOptions));
 
 // endpoints 
 app.use('/api', authRoutes); 
-app.use('/api', mainRoutes); 
+app.use('/api', homeRoutes); 
+app.use('/api/product', ProductsRoute); 
 
 
 

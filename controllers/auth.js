@@ -1,8 +1,8 @@
 const { StatusCodes } = require("http-status-codes");
 const wrapper = require("express-async-handler");
-const { User, oneTimePin, Sequelize } = require("../models");
+const { User, oneTimePin } = require("../models");
 const jwt = require("jsonwebtoken");
-const { ValidationError, Model } = require("sequelize");
+const { ValidationError } = require("sequelize");
 const client = require("../service/redis");
 const emailService = require("../service/emailService");
 
@@ -52,7 +52,7 @@ const login = wrapper(async (req, res) => {
       .status(StatusCodes.UNAUTHORIZED)
       .json({ error: "Wrong or Invalid password , try again" });
   }
-  const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
+  const token = jwt.sign({ userId: user.id , role : user.role }, process.env.JWT_SECRET, {
     expiresIn: "1h",
   });
   res.status(StatusCodes.OK).json({
