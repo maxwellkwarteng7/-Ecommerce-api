@@ -22,7 +22,7 @@ const validateToken = wrapper(async (req, res, next) => {
             req.userId = userId;  
             next(); 
         } catch (error) {
-            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "sorry something went wrong ! " }); 
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Invalid or expired token , login again please ! " }); 
         } 
     }
 });
