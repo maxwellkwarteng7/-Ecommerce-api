@@ -8,6 +8,10 @@ const getAllProducts = wrapper(async (req, res) => {
 });
 
 const postProduct = wrapper(async (req, res) => {
+    const { name, description, price, category } = req.body; 
+    if (!name || !description || !price || !category) {
+        res.status(StatusCodes.BAD_REQUEST).json({ error: "All fields are required" }); 
+    }
     res.status(StatusCodes.OK).json({ messsage: "post a product" });
 });
 
