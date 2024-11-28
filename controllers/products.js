@@ -17,6 +17,7 @@ const postProduct = wrapper(async (req, res) => {
 
 const updateProduct = wrapper(async (req, res) => {
     const { id } = req.params; 
+    console.log("this is the update request id ", id); 
 
     res.status(StatusCodes.OK).json({ messsage: `this is the product to update ${id}` });
 });
