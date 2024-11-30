@@ -8,10 +8,22 @@ const getAllProducts = wrapper(async (req, res) => {
 });
 
 const postProduct = wrapper(async (req, res) => {
+    if (!req.file || !req.files || req.files.length === 0) {
+        return res.status(StatusCodes.BAD_REQUEST).json({ error: "at least one image is required" }); 
+    }
+    if (req.files.length > 5) {
+        return res.status(StatusCodes.BAD_REQUEST).json({ error: "images cannot be more than 5" }); 
+    }
+    const imageUrl = req.file.url; 
+    if (!imageUrl) {
+        return res.status(StatusCodes.BAD_GATEWAY).json({error : "image field cannot be empty"})
+    }
     const { name, description, price, category } = req.body; 
     if (!name || !description || !price || !category) {
-        res.status(StatusCodes.BAD_REQUEST).json({ error: "All fields are required" }); 
+        return res.status(StatusCodes.BAD_REQUEST).json({ error: "All fields are required" }); 
     }
+    // save the product information 
+
     res.status(StatusCodes.OK).json({ messsage: "post a product" });
 });
 
