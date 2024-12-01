@@ -29,7 +29,7 @@ const updateProduct = wrapper(async (req, res) => {
     const { id } = req.params; 
    
 
-    res.status(StatusCodes.OK).json({ messsage: `this iss the product to update ${id}` });
+    res.status(StatusCodes.OK).json({ messsage: `this is the product to update ${id}` });
 });
 
 const deleteProduct = wrapper(async (req, res) => {
