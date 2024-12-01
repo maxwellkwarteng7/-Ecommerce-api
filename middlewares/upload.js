@@ -10,7 +10,6 @@ const storage = new CloudinaryStorage({
         folder: 'uploads', 
         public_id: (req , file ) => `${Date.now()}-${file.originalname}` 
     }, 
-    
 }); 
 
 // filter the file format
