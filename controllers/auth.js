@@ -52,9 +52,13 @@ const login = wrapper(async (req, res) => {
       .status(StatusCodes.UNAUTHORIZED)
       .json({ error: "Wrong or Invalid password , try again" });
   }
-  const token = jwt.sign({ userId: user.id , role : user.role }, process.env.JWT_SECRET, {
-    expiresIn: "1h",
-  });
+  const token = jwt.sign(
+    { userId: user.id, role: user.role },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "1h",
+    }
+  );
   res.status(StatusCodes.OK).json({
     message: {
       username: user.username,
@@ -116,17 +120,17 @@ const initiateResetPassword = wrapper(async (req, res) => {
 
 //change or reset password
 const sendOneTimePin = wrapper(async (req, res) => {
-  const { pin, email, password , type  } = req.body;
+  const { pin, email, password, type } = req.body;
   if (!pin || !email || !type) {
     return res
       .status(StatusCodes.BAD_REQUEST)
       .json({ error: "pin , email and type  fields are required" });
   }
-  if (type === 'forgot_password') {
+  if (type === "forgot_password") {
     if (!password) {
       return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ error: "Password field is required" });
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ error: "Password field is required" });
     }
   }
   // fetch the usr
@@ -154,46 +158,44 @@ const sendOneTimePin = wrapper(async (req, res) => {
       .status(StatusCodes.UNAUTHORIZED)
       .json({ error: "invalid or expired pin " });
   }
-  if (type === 'forgot_password') {
+  if (type === "forgot_password") {
     user.password = password;
     user.save();
-    return res.status(StatusCodes.OK).json({ message: "password changed successful" });
+    return res
+      .status(StatusCodes.OK)
+      .json({ message: "password changed successful" });
   }
 
   user.emailverification = currentTime;
   user.save();
-  res.status(StatusCodes.OK).json({ message: "email verified successfully" }); 
+  res.status(StatusCodes.OK).json({ message: "email verified successfully" });
 });
 
-
 const resendPin = wrapper(async (req, res) => {
-  const {  email , type  } = req.body;
-  if (!email || !type ) {
+  const { email, type } = req.body;
+  if (!email || !type) {
     return res
       .status(StatusCodes.BAD_REQUEST)
       .json({ error: "Email or type field required" });
   }
   const user = await User.findOne({
-    where: { email }
+    where: { email },
   });
-  if (type === 'email_verification') {
-    emailService(user, 'Email verification Pin', 'verify your email '); 
-  return res.status(StatusCodes.OK).json({ message: "verification Pin resent" }); 
+  if (type === "email_verification") {
+    emailService(user, "Email verification Pin", "verify your email ");
+    return res
+      .status(StatusCodes.OK)
+      .json({ message: "verification Pin resent" });
   }
-  emailService(user, 'Email verification Pin', 'reset your password'); 
-   res.status(StatusCodes.OK).json({ message: "reset password Pin resent" }); 
-  
+  emailService(user, "Email verification Pin", "reset your password");
+  res.status(StatusCodes.OK).json({ message: "reset password Pin resent" });
 });
-
-
- 
-
 
 module.exports = {
   register,
   login,
   logout,
   initiateResetPassword,
-  sendOneTimePin, 
-  resendPin
+  sendOneTimePin,
+  resendPin,
 };
