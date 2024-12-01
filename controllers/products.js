@@ -36,7 +36,7 @@ const deleteProduct = wrapper(async (req, res) => {
     const { id } = req.params; 
   
 
-    res.status(StatusCodes.OK).json({ messsage: `delete a product with id : ${id}` });
+    res.status(StatusCodes.OK).json({ messsage: `Delete a product with id : ${id}` });
 });
 
 
