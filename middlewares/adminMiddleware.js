@@ -21,7 +21,6 @@ const adminMiddleware = wrapper(async (req, res, next) => {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             const { role, userId } = decoded;
             req.user = userId;
-            console.log(role);
             if (role === 'admin' || role === 'superAdmin') {
                 next();
             } else {

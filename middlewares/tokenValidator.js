@@ -14,7 +14,6 @@ const validateToken = wrapper(async (req, res, next) => {
     if (token) {
         try {
             const blacklisted = await client.get(`blacklisted:${token}`);
-            console.log(blacklisted)
             if (blacklisted) {
                 return res.status(StatusCodes.UNAUTHORIZED).json({ error: 'Token is invalidated , please login in again' }); 
             }
