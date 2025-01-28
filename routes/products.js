@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.get('/',  validateToken ,  getAllProducts); 
 // use the admin middleware after this route
-router.post('/' , upload.array('imageUrl' , 1), adminMiddleware, postProduct);
+router.post('/', upload.single('image'), adminMiddleware, postProduct);
 router.put('/:id', adminMiddleware, updateProduct);  
 router.delete('/:id', adminMiddleware, deleteProduct); 
 
