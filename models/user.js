@@ -15,11 +15,14 @@ module.exports = (sequelize, DataTypes) => {
       User.hasOne(models.oneTimePin, {
         as: 'forgotPasswordPin',
         foreignKey: 'userId',
-        onDelete: "CASCADE",
       }); 
       User.hasMany(models.Cart, {
-        foreignKey: 'userId', 
-        as : 'cart'
+        foreignKey: 'userId',
+        as: 'cart'
+      }); 
+      User.hasMany(models.Orders, {
+        as: 'orders', 
+        foreignKey : 'userId'
       })
     }
   }
