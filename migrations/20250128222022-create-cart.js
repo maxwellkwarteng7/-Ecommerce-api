@@ -10,26 +10,33 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       product_name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false 
       },
       product_price: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER, 
+        allowNull :false 
       },
       product_quantity: {
-        type: Sequelize.INTEGER
+        allowNull: false, 
+        type : Sequelize.INTEGER
       },
       product_image: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false 
       },
       product_description: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false 
       },
       product_category: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false 
       },
       userId: {
-        type: Sequelize.INTEGER
-      },
+        type: Sequelize.INTEGER, 
+        allowNull :false 
+      } , 
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
