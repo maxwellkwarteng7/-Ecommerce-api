@@ -8,20 +8,25 @@ const getAllProducts = wrapper(async (req, res) => {
 });
 
 const postProduct = wrapper(async (req, res) => {
-    if ( !req.files || req.files.length === 0) {
-        return res.status(StatusCodes.BAD_REQUEST).json({ error: "At least one image is required" }); 
-    }
-
-    const imageUrl = req.files.map((file) => file.url); 
+    try {
+    // Check if file exists
+    if (!req.file) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: 'No file uploaded' });
+        }
+        // the image path /url 
+        const image = req.file.path; 
+        // Respond to the client
+        const { price, description, name, category } = req.body;     
+        if (!price || !description || !name || !category) {
+            console.log(price, description, category, name);
+            return res.status(StatusCodes.BAD_REQUEST).json({ error: "All fields are required" }); 
+        }
+        console.log(name, description, price, category, image); 
    
-    const { name, description, price, category } = req.body; 
-    if (!name || !description || !price || !category) {
-        return res.status(StatusCodes.BAD_REQUEST).json({ error: "All fields are required" }); 
-    }
-    // save the product information 
-    console.log(name, description, price, category, imageUrl); 
-
-    res.status(StatusCodes.OK).json({ messsage: "post a product" });
+  } catch (err) {
+    console.error('Error uploading file:', err.message);
+    res.status(500).json({ message: 'Failed to upload file', error: err.message });
+  }
 });
 
 const updateProduct = wrapper(async (req, res) => {
