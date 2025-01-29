@@ -18,9 +18,9 @@ module.exports = (sequelize, DataTypes) => {
       }); 
       User.hasOne(models.Cart, {
         foreignKey: 'userId',
-        as: 'cartBasket'
+        as: 'cart'
       }); 
-      User.hasMany(models.Orders, {
+      User.hasOne(models.Orders, {
         as: 'orders', 
         foreignKey : 'userId'
       })
