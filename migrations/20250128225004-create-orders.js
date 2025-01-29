@@ -8,12 +8,15 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
-      },
-      order_status: {
-        type: Sequelize.ENUM('pending', 'shipped', 'completed'), 
-        defaultValue: 'pending', 
+      } , 
+      productId: {
+        type: Sequelize.INTEGER,
         allowNull: false 
-      }, 
+      },
+      totalPrice: {
+        type: Sequelize.FLOAT, 
+        allowNull : false 
+      } , 
       userId: {
         type: Sequelize.INTEGER, 
         allowNull :false 

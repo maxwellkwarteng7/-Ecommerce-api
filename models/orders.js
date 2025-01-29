@@ -19,38 +19,17 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Orders.init({
-    product_name: {
-      type: DataTypes.STRING,
-      allowNull: false 
-    },
-    order_status: {
-      type: DataTypes.ENUM('pending', 'shipped', 'completed'), 
-      defaultValue: 'pending', 
-      allowNull: false 
-    } , 
-    product_price: {
-      type: DataTypes.INTEGER, 
-      allowNull :false 
-    },
-    product_quantity:{
-      type: DataTypes.INTEGER, 
-      allowNull :false 
-    },
-    product_image: {
-      type: DataTypes.STRING,
-      allowNull: false 
-    },
-    product_description: {
-      type: DataTypes.STRING,
-      allowNull: false 
-    },
-    product_category: {
-      type: DataTypes.STRING,
+    productId: {
+      type: DataTypes.INTEGER,
       allowNull: false 
     },
     userId: {
       type: DataTypes.INTEGER, 
       allowNull :false 
+    }, 
+    totalPrice: {
+      type: DataTypes.FLOAT, 
+      allowNull : false 
     }
   }, {
     sequelize,
