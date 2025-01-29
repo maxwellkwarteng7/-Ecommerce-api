@@ -16,9 +16,16 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'CASCADE'
       }); 
       Product.hasMany(models.CartItems, {
-        foreignKey: 'productId', 
-        as : 'cartItem'
-      })
+        foreignKey: 'productId',
+        as: 'cartItem'
+      }); 
+
+      Product.hasMany(models.OrderItems, {
+        foreignKey: 'productId',
+        as: 'orderItem'
+      }); 
+
+    
       
     }
   }
