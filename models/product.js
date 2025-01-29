@@ -14,6 +14,10 @@ module.exports = (sequelize, DataTypes) => {
         as: 'productCategory',
         foreignKey: 'categoryId',
         onDelete: 'CASCADE'
+      }); 
+      Product.hasMany(models.CartItems, {
+        foreignKey: 'productId', 
+        as : 'cartItem'
       })
       
     }
@@ -39,6 +43,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING, 
       allowNull : false 
     }, 
+    stock: {
+      type: DataTypes.INTEGER, 
+      allowNull : false 
+    } , 
     categoryId: {
       type: DataTypes.INTEGER, 
       allowNull : false 
