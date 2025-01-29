@@ -9,34 +9,14 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      product_name: {
-        type: Sequelize.STRING,
-        allowNull: false 
-      },
-      product_price: {
-        type: Sequelize.INTEGER, 
-        allowNull :false 
-      },
-      product_quantity: {
-        allowNull: false, 
-        type : Sequelize.INTEGER
-      },
-      product_image: {
-        type: Sequelize.STRING,
-        allowNull: false 
-      },
-      product_description: {
-        type: Sequelize.STRING,
-        allowNull: false 
-      },
-      product_category: {
-        type: Sequelize.STRING,
-        allowNull: false 
-      },
       userId: {
         type: Sequelize.INTEGER, 
-        allowNull :false 
-      } , 
+        allowNull : false 
+      }, 
+      totalPrice: {
+        type: Sequelize.FLOAT,  
+        allowNull : false 
+      }, 
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

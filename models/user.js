@@ -16,9 +16,9 @@ module.exports = (sequelize, DataTypes) => {
         as: 'forgotPasswordPin',
         foreignKey: 'userId',
       }); 
-      User.hasMany(models.Cart, {
+      User.hasOne(models.Cart, {
         foreignKey: 'userId',
-        as: 'cart'
+        as: 'cartBasket'
       }); 
       User.hasMany(models.Orders, {
         as: 'orders', 
