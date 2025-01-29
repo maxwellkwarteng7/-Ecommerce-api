@@ -9,10 +9,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       } , 
-      productId: {
-        type: Sequelize.INTEGER,
-        allowNull: false 
-      },
       totalPrice: {
         type: Sequelize.FLOAT, 
         allowNull : false 

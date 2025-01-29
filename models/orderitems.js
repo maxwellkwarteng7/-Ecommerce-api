@@ -17,24 +17,24 @@ module.exports = (sequelize, DataTypes) => {
       });
 
       OrderItems.belongsTo(models.Product, {
-        foreignKey: 'productId', 
-        onDelete: 'CASCADE' , 
-        as : 'orderProducts'
+        foreignKey: 'productId',
+        onDelete: 'CASCADE',
+        as: 'products'
       })
     }
   }
   OrderItems.init({
     quantity: {
-      type: DataTypes.INTEGER, 
-      allowNull : false 
-    }, 
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
     productId: {
-      type: DataTypes.INTEGER, 
-      allowNull : false 
-    }, 
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
     orderId: {
-      type: DataTypes.INTEGER, 
-      allowNull : false 
+      type: DataTypes.INTEGER,
+      allowNull: false
     }
   }, {
     sequelize,
