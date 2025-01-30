@@ -1,7 +1,7 @@
 
 const { StatusCodes } = require("http-status-codes");
 const wrapper = require("express-async-handler");
-
+const { Category } = require('../models'); 
 
 const getAllProducts = wrapper(async (req, res) => {
     res.status(StatusCodes.OK).json({ messsage: "All products here" });
@@ -11,7 +11,7 @@ const postProduct = wrapper(async (req, res) => {
     try {
     // Check if file exists
     if (!req.file) {
-      return res.status(StatusCodes.BAD_REQUEST).json({ message: 'No file uploaded' });
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: 'image is a required field' });
         }
         // the image path /url 
         const image = req.file.path; 
@@ -37,6 +37,7 @@ const updateProduct = wrapper(async (req, res) => {
     res.status(StatusCodes.OK).json({ messsage: `this is the product to update ${id}` });
 });
 
+
 const deleteProduct = wrapper(async (req, res) => {
     const { id } = req.params; 
 
@@ -45,11 +46,33 @@ const deleteProduct = wrapper(async (req, res) => {
 });
 
 
+// create a category
+
+const createCategory = wrapper(async (req, res) => {
+    const { name } = req.body;
+    console.log(req.body.name); 
+    if ( !req.file) {
+        return res.status(StatusCodes.BAD_REQUEST).json({ error: 'An image is required' }); 
+    }
+    const image = req.file.path;
+    if (!name) {
+        return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Category name is a required field' });
+    }
+    try {
+        const category = await Category.create({ name, image }); 
+        res.status(StatusCodes.CREATED).json({ message: category }); 
+    } catch (error) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "error creating category" }); 
+    }
+  
+}); 
+
 
 
 module.exports = {
     getAllProducts,
     postProduct,
     updateProduct,
-    deleteProduct
+    deleteProduct, 
+    createCategory
 }
