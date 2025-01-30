@@ -15,7 +15,7 @@ router.put('/:id', updateProduct);
 router.delete('/:id',  deleteProduct); 
 
 // create a category 
-router.post('/create-category',upload.single('category_image') ,  createCategory); 
+
 
 
 
