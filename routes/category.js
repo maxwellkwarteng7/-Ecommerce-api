@@ -5,7 +5,7 @@ const upload = require('../middlewares/upload');
 const router = express.Router(); 
 
 
-router.post('/create-category',upload.single('category_image') ,  createCategory); 
+router.post('/',upload.single('category_image') ,  createCategory); 
 
 
 
