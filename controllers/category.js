@@ -19,7 +19,30 @@ const createCategory = wrapper(async (req, res) => {
 }); 
 
 
+const updateCategory = wrapper(async (req, res) => {
+    const { id } = req.params; 
+    console.log("update id : " ,id); 
+}); 
+
+
+
+const deleteCategory = wrapper(async (req, res) => {
+    const { id } = req.params; 
+    console.log("delete id : " ,id); 
+});
+
+
+const categoryProducts  = wrapper(async (req, res) => {
+    const { categoryId } = req.params; 
+    console.log("category id : " ,categoryId); 
+});
+
+
+
 
 module.exports = {
-    createCategory
+    createCategory, 
+    updateCategory, 
+    deleteCategory, 
+    categoryProducts
 }
