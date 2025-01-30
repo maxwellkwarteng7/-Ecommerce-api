@@ -12,7 +12,7 @@ router.post('/initiate-password-reset', initiateResetPassword);
 router.post('/reset-password', sendOneTimePin);
 router.post('/verify-email', sendOneTimePin);  
 router.post('/resend-pin', resendPin); 
-router.get('/user-profile'); 
+
 
 
 
