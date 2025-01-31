@@ -21,7 +21,27 @@ const createCategory = wrapper(async (req, res) => {
 
 const updateCategory = wrapper(async (req, res) => {
     const { id } = req.params; 
-    console.log("update id : " ,id); 
+    // check the payload coming 
+    const { name } = req.body; 
+    if (!name || !req.file) {
+        return res.status(StatusCodes.BAD_REQUEST).json({ error: "name and image fields cannot be empty" }); 
+    }
+    // find the category 
+    try {
+          const specificCategory = await Category.findOne({ where: { id } }); 
+
+    if (!specificCategory) {
+        return res.status(StatusCodes.NOT_FOUND).json({ error: "No category with this id found"});
+        }
+        // if category is there , save with updated info 
+        specificCategory.name = name; 
+        specificCategory.image = req.file.path; 
+        await specificCategory.save(); 
+    
+        res.status(StatusCodes.OK).json({ specificCategory }); 
+    } catch (error) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message }); 
+    }
 }); 
 
 

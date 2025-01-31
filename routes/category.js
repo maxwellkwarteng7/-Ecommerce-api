@@ -11,7 +11,7 @@ router.get('/:categoryId', categoryProducts);
 router.use(adminMiddleware);
 // authenticated routes (admin and super admin only); 
 router.post('/', upload.single('category_image'), createCategory);
-router.put('/:id', updateCategory);
+router.put('/:id', upload.single('category_image') , updateCategory);
 router.delete('/:id', deleteCategory);
 
 
