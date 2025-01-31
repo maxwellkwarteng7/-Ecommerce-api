@@ -1,12 +1,12 @@
 const express = require('express');
-const { createCategory, updateCategory, deleteCategory, categoryProducts, allCategories } = require('../controllers/category');
+const { createCategory, updateCategory, deleteCategory, allCategories, getCategoryProducts } = require('../controllers/category');
 const upload = require('../middlewares/upload');
 const adminMiddleware = require('../middlewares/adminMiddleware');
 
 const router = express.Router();
 
 //routes 
-router.get('/:categoryId', categoryProducts);
+router.get('/:categoryId', getCategoryProducts);
 
 router.use(adminMiddleware);
 // authenticated routes (admin and super admin only); 

@@ -1,7 +1,7 @@
 
 const { StatusCodes } = require("http-status-codes");
 const wrapper = require("express-async-handler");
-const { Category } = require('../models'); 
+const { Category , Product } = require('../models'); 
 
 
 const createCategory = wrapper(async (req, res) => {
@@ -69,16 +69,37 @@ const deleteCategory = wrapper(async (req, res) => {
 });
 
 
-const categoryProducts  = wrapper(async (req, res) => {
+const getCategoryProducts  = wrapper(async (req, res) => {
     const { categoryId } = req.params; 
-    console.log("category id : " ,categoryId); 
+    if (!categoryId) {
+        return res.status(StatusCodes.BAD_REQUEST).json({ error: "No categoryId provided" }); 
+    }
+    try {
+         const categoryProducts = await Category.findOne({
+        where: { id }, include: [
+            {
+                model: Product,
+                as: 'products'
+            }
+        ]
+    }); 
+
+    res.status(StatusCodes.OK).json({ message: categoryProducts });
+    } catch (error) {
+     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Error fetching category products" });  
+    }
 });
 
 
 const allCategories = wrapper(async (req, res) => {
     // fetch all categories 
-    const categories = await Category.findAll({}); 
+    try {
+        const categories = await Category.findAll({});   
     res.status(StatusCodes.OK).json({ message: categories });
+
+    } catch (error) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Error fetching categories" }); 
+    }
 });
 
 
@@ -88,6 +109,6 @@ module.exports = {
     createCategory, 
     updateCategory, 
     deleteCategory, 
-    categoryProducts, 
+    getCategoryProducts , 
     allCategories
 }
