@@ -72,11 +72,11 @@ const deleteCategory = wrapper(async (req, res) => {
 const getCategoryProducts  = wrapper(async (req, res) => {
     const { categoryId } = req.params; 
     if (!categoryId) {
-        return res.status(StatusCodes.BAD_REQUEST).json({ error: "No categoryId provided" }); 
+        return res.status(StatusCodes.BAD_REQUEST).json({ error: "No category Id provided" }); 
     }
     try {
          const categoryProducts = await Category.findOne({
-        where: { id }, include: [
+        where: { id : categoryId }, include: [
             {
                 model: Product,
                 as: 'products'
@@ -86,6 +86,7 @@ const getCategoryProducts  = wrapper(async (req, res) => {
 
     res.status(StatusCodes.OK).json({ message: categoryProducts });
     } catch (error) {
+        console.log(error); 
      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Error fetching category products" });  
     }
 });
