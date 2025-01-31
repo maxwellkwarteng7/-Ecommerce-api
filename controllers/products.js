@@ -1,59 +1,96 @@
-
 const { StatusCodes } = require("http-status-codes");
 const wrapper = require("express-async-handler");
-const { Category } = require('../models'); 
+const {  Product , Reviews } = require("../models");
+const { BadRequestError, NotFoundError } = require("../errors");
 
 const getAllProducts = wrapper(async (req, res) => {
-    res.status(StatusCodes.OK).json({ messsage: "All products here" });
+    // fetch products 
+    const products = await Product.findAll({});
+    // send products response 
+    res.status(StatusCodes.OK).json({ messsage: products });
 });
 
 const postProduct = wrapper(async (req, res) => {
-    try {
-    // Check if file exists
-    if (!req.file) {
-      return res.status(StatusCodes.BAD_REQUEST).json({ message: 'image is a required field' });
-        }
-        // the image path /url 
-        const image = req.file.path; 
-        // Respond to the client
-        const { price, description, name, category } = req.body;     
-        if (!price || !description || !name || !category) {
-            console.log(price, description, category, name);
-            return res.status(StatusCodes.BAD_REQUEST).json({ error: "All fields are required" }); 
-        }
-        console.log(name, description, price, category, image); 
-   
-  } catch (err) {
-    console.error('Error uploading file:', err.message);
-    res.status(500).json({ message: 'Failed to upload file', error: err.message });
-  }
+    const { price, description, name, categoryId, stock } = req.body;
+    if (!price || !description || !name || !categoryId || !stock || !req.file) {
+        throw new BadRequestError('All fields are required');
+    }
+    // save the product
+    const product = await Product.create({
+        price,
+        description,
+        stock,
+        image: req.file.path,
+        name,
+        categoryId,
+    });
+
+    res.status(StatusCodes.CREATED).json({ message: product });
+
 });
 
 const updateProduct = wrapper(async (req, res) => {
-    const { id } = req.params; 
- 
-   
+    const { id } = req.params;
+    const { price, description, name, categoryId, stock } = req.body;
+    console.log(price, description, name, categoryId, stock, req.file.path)
 
-    res.status(StatusCodes.OK).json({ messsage: `this is the product to update ${id}` });
+    if (!price || !description || !name || !categoryId || !stock | !req.file) {
+        throw new BadRequestError('All fields are required');
+    }
+    // find the product 
+    const product = await Product.findOne({ where: { id } });
+
+    if (!product) {
+        throw new NotFoundError(`No product with id : ${id} found`);
+    }
+    // update the product
+    product.name = name;
+    product.price = price;
+    product.categoryId = categoryId;
+    product.stock = stock;
+    product.description = description;
+    product.image = req.file.path;
+    await product.save();
+
+    res.status(StatusCodes.OK).json({ message: "Product updated successfully" });
+    res
+        .status(StatusCodes.OK)
+        .json({ messsage: `this is the product to update ${id}` });
 });
-
 
 const deleteProduct = wrapper(async (req, res) => {
-    const { id } = req.params; 
-
-
-    res.status(StatusCodes.OK).json({ messsage: `Delete a product with id : ${id}` });
+    const { id } = req.params;
+    // delete the product by id 
+    const deletedProduct = await Product.destroy({ where: { id } }); 
+    if (deletedProduct === 0) {
+        throw new NotFoundError(`No product with this id: ${id} found`)
+    }
+    res
+        .status(StatusCodes.OK)
+        .json({ messsage: 'Product deleted successfully'});
 });
 
-
-// create a category
-
-
-
+const getProductAndReviews = wrapper(async (req, res) => {
+    const { id } = req.params;
+    // find the product with it's reviews 
+    const productAndReviews = await Product.findOne({
+        where: { id }, include: [
+            {
+                model: Reviews,
+                as: 'reviews'
+            }
+        ]
+    });
+    if (!productAndReviews) {
+        throw new NotFoundError(`No product with this id : ${id} found`);
+    }
+    res.status(StatusCodes.OK).json({ message: productAndReviews });
+});
 
 module.exports = {
     getAllProducts,
     postProduct,
     updateProduct,
-    deleteProduct, 
-}
+    deleteProduct,
+    getProductAndReviews
+};
