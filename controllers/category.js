@@ -21,6 +21,9 @@ const createCategory = wrapper(async (req, res) => {
 
 const updateCategory = wrapper(async (req, res) => {
     const { id } = req.params; 
+       if (!id) {
+        return res.status(StatusCodes.BAD_REQUEST).json({error : "No id provided"})
+    }
     // check the payload coming 
     const { name } = req.body; 
     if (!name || !req.file) {
@@ -31,14 +34,14 @@ const updateCategory = wrapper(async (req, res) => {
           const specificCategory = await Category.findOne({ where: { id } }); 
 
     if (!specificCategory) {
-        return res.status(StatusCodes.NOT_FOUND).json({ error: "No category with this id found"});
+        return res.status(StatusCodes.NOT_FOUND).json({ error: `No category with this  id ${id} found`});
         }
         // if category is there , save with updated info 
         specificCategory.name = name; 
         specificCategory.image = req.file.path; 
         await specificCategory.save(); 
     
-        res.status(StatusCodes.OK).json({ specificCategory }); 
+        res.status(StatusCodes.OK).json({ message : "Category updated Successfully" }); 
     } catch (error) {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message }); 
     }
@@ -48,7 +51,21 @@ const updateCategory = wrapper(async (req, res) => {
 
 const deleteCategory = wrapper(async (req, res) => {
     const { id } = req.params; 
-    console.log("delete id : " ,id); 
+    // find and delete the category
+    if (!id) {
+        return res.status(StatusCodes.BAD_REQUEST).json({error : "No id provided"})
+    }
+    try {
+        const deletedCategory = await Category.destroy({ where: { id } });    
+        if (deletedCategory === 0) {
+            return res.status(StatusCodes.NOT_FOUND).json({ error: "category with this id not found" }); 
+        } 
+        res.status(StatusCodes.OK).json({
+            message : "Category successfully deleted"
+         }); 
+    } catch (error) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error: "Error deleting category"}); 
+    }
 });
 
 
@@ -58,11 +75,19 @@ const categoryProducts  = wrapper(async (req, res) => {
 });
 
 
+const allCategories = wrapper(async (req, res) => {
+    // fetch all categories 
+    const categories = await Category.findAll({}); 
+    res.status(StatusCodes.OK).json({ message: categories });
+});
+
+
 
 
 module.exports = {
     createCategory, 
     updateCategory, 
     deleteCategory, 
-    categoryProducts
+    categoryProducts, 
+    allCategories
 }
