@@ -16,6 +16,7 @@ const errorhandler = require('./middlewares/errorhandler');
 const redisClient = require('./service/redis'); 
 const ProductsRoute = require('./routes/products'); 
 const categoryRoute = require('./routes/category'); 
+const cartRoute = require('./routes/cart'); 
 
 
 
@@ -29,7 +30,8 @@ app.use(cors(corsOptions));
 app.use('/api', authRoutes); 
 app.use('/api', homeRoutes); 
 app.use('/api/product', ProductsRoute); 
-app.use('/api/category' , categoryRoute); 
+app.use('/api/category', categoryRoute); 
+app.use('/api/cart', cartRoute); 
 
 
 
