@@ -8,8 +8,9 @@ require('dotenv').config();
 const pay = wrapper(async (req, res) => {
     const { userId } = req; 
     // find the email of the user and fetch the cart of the user
+    console.log(userId);
     const user = await User.findOne({
-        where: { userId }, include: [
+        where: { id :  userId }, include: [
             {
                 model: Cart, 
                 as : 'cart'
@@ -19,6 +20,7 @@ const pay = wrapper(async (req, res) => {
     if (!user) {
         throw new NotFoundError("User not found"); 
     }
+    console.log(user.cart.totalPrice); 
     //define necessary variables 
     const totalPrice = user.cart.totalPrice; 
     const email = user.email; 
@@ -37,8 +39,6 @@ const pay = wrapper(async (req, res) => {
             },
         }
     ); 
-
-    
 
     res.status(StatusCodes).json({ message: 'Payment initiated' , data : response.data }); 
 
