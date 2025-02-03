@@ -33,7 +33,7 @@ app.use('/api', homeRoutes);
 app.use('/api/product', ProductsRoute); 
 app.use('/api/category', categoryRoute); 
 app.use('/api/cart', cartRoute); 
-app.use('/api/', paymentRoute); 
+app.use('/api/paystack', paymentRoute); 
 
 
 
