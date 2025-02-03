@@ -26,18 +26,21 @@ const pay = wrapper(async (req, res) => {
     
     // initialize payment to paystack 
     const response = await axios.post(paystackURL, {
-        email, 
-        amount: totalPrice * 100, 
-        currency : 'Ghs'
+        email,
+        amount: totalPrice * 100,
+        currency: 'Ghs'
     },
         {
             headers: {
                 Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
-                "Content-Type" : 'application/json',
-           } , 
+                "Content-Type": 'application/json',
+            },
         }
-    )
+    ); 
 
+    
+
+    res.status(StatusCodes).json({ message: 'Payment initiated' , data : response.data }); 
 
 }); 
 
