@@ -1,30 +1,43 @@
 const { StatusCodes } = require("http-status-codes");
 const wrapper = require("express-async-handler");
-const { Cart, CartItems } = require("../models");
-const { BadRequestError } = require("../errors");
+const { Cart, CartItems , Product, sequelize } = require("../models");
+const { BadRequestError, NotFoundError } = require("../errors");
 
 
 
-async function AddProductToCart (cartItems , userId) {
-    //check if the user has a cart 
-    const hasCart = await Cart.findOne({ where: { userId } }); 
-    if (hasCart) {
+
+async function addProductToCart(cartItems, userId) {
+    return sequelize.transaction(async (transaction) => {
+        let cart = await Cart.findOne({ where: { userId }, transaction });
+
+        if (!cart) {
+            cart = await Cart.create({ userId, totalPrice: 0 }, { transaction });
+        }
+
+        const cartId = cart.id;
+
         for (let item of cartItems) {
-            const cartId = hasCart.id; 
-            const { productId, quantity } = item; 
-            
-            // check if the product already exist in the cartItem
-            const productExist = await CartItems.findOne({ where: { cartId, productId } }); 
+            let product = await Product.findOne({ where: { id: item.productId }, transaction });
+            if (!product) throw new NotFoundError("Product not found");
 
-            if (productExist) {
-                productExist.quantity += quantity; 
-                
+            let cartItem = await CartItems.findOne({ where: { cartId, productId: item.productId }, transaction });
+
+            if (cartItem) {
+                cartItem.quantity = item.quantity;
+                cartItem.subTotal = cartItem.quantity * product.price;
+                await cartItem.save({ transaction });
+            } else {
+                await CartItems.create({ cartId, productId: item.productId, quantity: item.quantity, subTotal: item.quantity * product.price }, { transaction });
             }
         }
-    } else {
-        
-    }
+
+        cart.totalPrice = await CartItems.sum("subTotal", { where: { cartId }, transaction });
+        await cart.save({ transaction });
+
+        return cart;
+    });
 }
+
 
 const addToCart = wrapper(async (req, res) => {
     const { cartItemsArray } = req.body;
@@ -32,11 +45,9 @@ const addToCart = wrapper(async (req, res) => {
         throw new BadRequestError('cart Items are required or must be an array'); 
     }
     const { userId } = req;
-    const cart = await AddProductToCart(cartItemsArray, userId);
+    const userCart = await addProductToCart(cartItemsArray, userId); 
 
-   
-    // check if user has a cart if not create one for user 
-    const userCart = await Cart.findOne({ where: { userId } });
+    res.status(StatusCodes.OK).json({ message: userCart });
 }); 
 
 

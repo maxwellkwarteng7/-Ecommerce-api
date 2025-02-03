@@ -45,3 +45,4 @@ module.exports = (sequelize, DataTypes) => {
   });
   return CartItems;
 };
+
