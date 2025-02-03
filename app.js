@@ -17,6 +17,7 @@ const redisClient = require('./service/redis');
 const ProductsRoute = require('./routes/products'); 
 const categoryRoute = require('./routes/category'); 
 const cartRoute = require('./routes/cart'); 
+const paymentRoute = require('./routes/payment'); 
 
 
 
@@ -32,6 +33,7 @@ app.use('/api', homeRoutes);
 app.use('/api/product', ProductsRoute); 
 app.use('/api/category', categoryRoute); 
 app.use('/api/cart', cartRoute); 
+app.use('/api/', paymentRoute); 
 
 
 
