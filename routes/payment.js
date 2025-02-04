@@ -7,7 +7,8 @@ const router = express.Router();
  
 router.post('/initialize-payment', initializePayment); 
 
-router.get('/verify-payment/:reference',verifyPayment); 
+router.get('/verify-payment/:reference', verifyPayment); 
+
 
 
 module.exports = router; 
