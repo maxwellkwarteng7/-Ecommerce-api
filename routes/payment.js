@@ -1,13 +1,13 @@
 const express = require('express'); 
-const {  initializePayment } = require('../controllers/paystack');
+const {  initializePayment, verifyPayment } = require('../controllers/paystack');
 const validateToken = require('../middlewares/tokenValidator');
 const router = express.Router();
 
 
+ 
+router.post('/initialize-payment', initializePayment); 
 
-router.post('/initialize-payment', validateToken, initializePayment); 
-
-router.get('/verify-payment/:reference',); 
+router.get('/verify-payment/:reference',verifyPayment); 
 
 
 module.exports = router; 
