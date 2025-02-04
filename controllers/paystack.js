@@ -5,7 +5,7 @@ const { NotFoundError } = require('../errors');
 const axios = require('axios');
 require('dotenv').config(); 
 
-const pay = wrapper(async (req, res) => {
+const initializePayment = wrapper(async (req, res) => {
     const { userId } = req; 
     // find the email of the user and fetch the cart of the user
     const user = await User.findOne({
@@ -44,6 +44,10 @@ const pay = wrapper(async (req, res) => {
 
 
 
+
+
+
+
 module.exports = {
-    pay
+    initializePayment
 }; 
