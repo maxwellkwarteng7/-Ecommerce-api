@@ -38,8 +38,7 @@ const initializePayment = wrapper(async (req, res) => {
         }
     ); 
 
-    res.status(StatusCodes.OK).json({ message: 'Payment initiated' , data : response.data }); 
-
+    res.status(StatusCodes.OK).json({ message: 'Payment initiated' , data : response.data.data.authorization_url }); 
 }); 
 
 
@@ -60,9 +59,12 @@ const verifyPayment = wrapper(async (req, res) => {
     }); 
 
     if (response.data.status === 'success') {
+        // turn cart into orders here
         
         // do what you gotta do here 
         res.status(StatusCodes.OK).json({ message: "Payment Successful" }); 
+    } else {
+        res.status(StatusCodes.BAD_REQUEST).json({ error: "Payment verification failed" }); 
     }
 }); 
 
