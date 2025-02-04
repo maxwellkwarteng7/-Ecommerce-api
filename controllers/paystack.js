@@ -5,10 +5,9 @@ const { NotFoundError } = require('../errors');
 const axios = require('axios');
 require('dotenv').config(); 
 
-const pay = wrapper(async (req, res) => {
+const initializePayment = wrapper(async (req, res) => {
     const { userId } = req; 
     // find the email of the user and fetch the cart of the user
-    console.log(userId);
     const user = await User.findOne({
         where: { id :  userId }, include: [
             {
@@ -20,7 +19,6 @@ const pay = wrapper(async (req, res) => {
     if (!user) {
         throw new NotFoundError("User not found"); 
     }
-    console.log(user.cart.totalPrice); 
     //define necessary variables 
     const totalPrice = user.cart.totalPrice; 
     const email = user.email; 
@@ -29,8 +27,8 @@ const pay = wrapper(async (req, res) => {
     // initialize payment to paystack 
     const response = await axios.post(paystackURL, {
         email,
-        amount: totalPrice * 100,
-        currency: 'Ghs'
+        amount: totalPrice * 100, 
+        currency: 'GHS', 
     },
         {
             headers: {
@@ -40,12 +38,16 @@ const pay = wrapper(async (req, res) => {
         }
     ); 
 
-    res.status(StatusCodes).json({ message: 'Payment initiated' , data : response.data }); 
+    res.status(StatusCodes.OK).json({ message: 'Payment initiated' , data : response.data }); 
 
 }); 
 
 
 
+
+
+
+
 module.exports = {
-    pay
+    initializePayment
 }; 
