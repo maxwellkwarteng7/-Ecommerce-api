@@ -33,6 +33,10 @@ module.exports = {
         type: Sequelize.INTEGER, 
         allowNull : false 
       }, 
+      tagId: {
+        type: Sequelize.INTEGER, 
+        allowNull: true 
+      } , 
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
