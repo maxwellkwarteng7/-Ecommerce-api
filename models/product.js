@@ -26,10 +26,14 @@ module.exports = (sequelize, DataTypes) => {
       });
       
       Product.hasMany(models.Reviews, {
-        foreignKey: 'productId', 
-        as : 'reviews'
-      })
+        foreignKey: 'productId',
+        as: 'reviews'
+      }); 
 
+      Product.belongsTo(models.ProductTag, {
+        foreignKey: 'tagId',
+        as: 'tag'
+      });
     
       
     }
@@ -58,8 +62,11 @@ module.exports = (sequelize, DataTypes) => {
     categoryId: {
       type: DataTypes.INTEGER, 
       allowNull : false 
+    },  
+    tagId: {
+      type: DataTypes.INTEGER, 
+      allowNull: true 
     }
-    
   }, {
     sequelize,
     modelName: 'Product',
