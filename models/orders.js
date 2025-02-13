@@ -50,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     }, 
     paymentDate: {
-      type : DataTypes.Date , 
+      type : DataTypes.DATE, 
       allowNull : false 
     }
   }, {
