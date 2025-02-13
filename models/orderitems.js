@@ -28,6 +28,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false
     },
+    orderStatus: {
+      type: DataTypes.ENUM('Processing' , 'Shipped' , 'Delivered'),
+      allowNull: false, 
+      defaultValue : 'Processing'
+    },
     productId: {
       type: DataTypes.INTEGER,
       allowNull: false

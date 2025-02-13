@@ -36,6 +36,22 @@ module.exports = (sequelize, DataTypes) => {
     totalPrice: {
       type: DataTypes.FLOAT, 
       allowNull : false 
+    }, 
+    paymentStatus : {
+      type: DataTypes.STRING, 
+      allowNull: false 
+    }, 
+    paymentMethod: {
+      type: DataTypes.STRING, 
+      allowNull: false
+    }, 
+    transactionRef: {
+      type: DataTypes.STRING, 
+      allowNull: false
+    }, 
+    paymentDate: {
+      type : DataTypes.Date , 
+      allowNull : false 
     }
   }, {
     sequelize,

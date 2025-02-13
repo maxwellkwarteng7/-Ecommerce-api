@@ -85,13 +85,8 @@ const getCategoryProducts = wrapper(async (req, res) => {
 
 const allCategories = wrapper(async (req, res) => {
   // fetch all categories
-
   const categories = await Category.findAll({});
-  res.status(StatusCodes.OK).json({ message: categories });
-
-  res
-    .status(StatusCodes.INTERNAL_SERVER_ERROR)
-    .json({ error: "Error fetching categories" });
+  res.status(StatusCodes.OK).json(categories);
 });
 
 module.exports = {
