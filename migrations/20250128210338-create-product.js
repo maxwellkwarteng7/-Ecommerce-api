@@ -17,6 +17,10 @@ module.exports = {
         type : Sequelize.FLOAT , 
         allowNull: false 
       },
+      discountPrice: {
+        type: Sequelize.FLOAT, 
+        allowNull: true 
+      }, 
       description: {
         type: Sequelize.TEXT, 
         allowNull: false 
