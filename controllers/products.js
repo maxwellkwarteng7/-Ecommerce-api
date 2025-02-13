@@ -11,9 +11,9 @@ const getAllProducts = wrapper(async (req, res) => {
 });
 
 const postProduct = wrapper(async (req, res) => {
-    const { price, description, name, categoryId, stock } = req.body;
+    const { price, description, name, categoryId, stock ,tagId , discountPrice } = req.body;
     if (!price || !description || !name || !categoryId || !stock || !req.file) {
-        throw new BadRequestError('All fields are required');
+        throw new BadRequestError('price , description , name , category and stock are required fields');
     }
     // save the product
     const product = await Product.create({
@@ -23,6 +23,8 @@ const postProduct = wrapper(async (req, res) => {
         image: req.file.path,
         name,
         categoryId,
+        tagId, 
+        discountPrice
     });
 
     res.status(StatusCodes.CREATED).json({ message: product });
@@ -31,7 +33,7 @@ const postProduct = wrapper(async (req, res) => {
 
 const updateProduct = wrapper(async (req, res) => {
     const { id } = req.params;
-    const { price, description, name, categoryId, stock } = req.body;
+    const { price, description, name, categoryId, stock ,tagId , discountPrice } = req.body;
     console.log(price, description, name, categoryId, stock, req.file.path)
 
     if (!price || !description || !name || !categoryId || !stock | !req.file) {
@@ -45,6 +47,8 @@ const updateProduct = wrapper(async (req, res) => {
     }
     // update the product
     product.name = name;
+    product.tagId = tagId;
+    product.discountPrice = discountPrice;
     product.price = price;
     product.categoryId = categoryId;
     product.stock = stock;
