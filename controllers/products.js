@@ -33,9 +33,8 @@ const postProduct = wrapper(async (req, res) => {
 
 const updateProduct = wrapper(async (req, res) => {
     const { id } = req.params;
-    const { price, description, name, categoryId, stock ,tagId , discountPrice } = req.body;
-    console.log(price, description, name, categoryId, stock, req.file.path)
-
+    const { price, description, name, categoryId, stock, tagId, discountPrice } = req.body;
+    
     if (!price || !description || !name || !categoryId || !stock | !req.file) {
         throw new BadRequestError('All fields are required');
     }
@@ -45,21 +44,24 @@ const updateProduct = wrapper(async (req, res) => {
     if (!product) {
         throw new NotFoundError(`No product with id : ${id} found`);
     }
+
     // update the product
-    product.name = name;
-    product.tagId = tagId;
-    product.discountPrice = discountPrice;
-    product.price = price;
-    product.categoryId = categoryId;
-    product.stock = stock;
-    product.description = description;
-    product.image = req.file.path;
+    Object.assign(product, {
+        name,
+        tagId,
+        discountPrice,
+        price,
+        categoryId,
+        stock,
+        description
+    });
+    
+    if (req.file) {
+        product.image = req.file.path;
+    }
     await product.save();
 
     res.status(StatusCodes.OK).json({ message: "Product updated successfully" });
-    res
-        .status(StatusCodes.OK)
-        .json({ messsage: `this is the product to update ${id}` });
 });
 
 const deleteProduct = wrapper(async (req, res) => {
