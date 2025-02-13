@@ -21,7 +21,11 @@ module.exports = {
         type: Sequelize.INTEGER, 
         allowNull : false 
       }, 
-      
+      orderStatus: {
+        type: Sequelize.ENUM('Processing' , 'Shipped' , 'Delivered'),
+        allowNull: false, 
+        defaultValue : 'Processing'
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

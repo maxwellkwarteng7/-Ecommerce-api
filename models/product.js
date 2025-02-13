@@ -32,7 +32,8 @@ module.exports = (sequelize, DataTypes) => {
 
       Product.belongsTo(models.ProductTag, {
         foreignKey: 'tagId',
-        as: 'tag'
+        as: 'tag',
+        onDelete: 'CASCADE'
       });
     
       
@@ -47,6 +48,10 @@ module.exports = (sequelize, DataTypes) => {
       type : DataTypes.FLOAT , 
       allowNull: false 
     },
+    discountPrice: {
+      type: DataTypes.STRING, 
+      allowNull: true 
+    }, 
     description: {
       type: DataTypes.TEXT, 
       allowNull: false 

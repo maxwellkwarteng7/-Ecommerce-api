@@ -8,9 +8,10 @@ const router = express.Router();
 //routes 
 router.get('/:categoryId', getCategoryProducts);
 
-router.use(adminMiddleware);
+
 // authenticated routes (admin and super admin only); 
 router.get('/', allCategories); 
+router.use(adminMiddleware);
 router.post('/', upload.single('category_image'), createCategory);
 router.put('/:id', upload.single('category_image') , updateCategory);
 router.delete('/:id', deleteCategory);

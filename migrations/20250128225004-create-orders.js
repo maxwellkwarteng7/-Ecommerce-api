@@ -17,6 +17,22 @@ module.exports = {
         type: Sequelize.INTEGER, 
         allowNull :false 
       },
+      paymentStatus : {
+        type: Sequelize.STRING, 
+        allowNull: false 
+      }, 
+      paymentMethod: {
+        type: Sequelize.STRING, 
+        allowNull: false
+      }, 
+      transactionRef: {
+        type: Sequelize.STRING, 
+        allowNull: false
+      }, 
+      paymentDate: {
+        type : Sequelize.DATE, 
+        allowNull : false 
+      } , 
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

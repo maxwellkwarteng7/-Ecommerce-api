@@ -1,6 +1,6 @@
 const { StatusCodes } = require("http-status-codes");
 const wrapper = require("express-async-handler");
-const {  Product , Reviews } = require("../models");
+const {  Product , Reviews , ProductTag } = require("../models");
 const { BadRequestError, NotFoundError } = require("../errors");
 
 const getAllProducts = wrapper(async (req, res) => {
@@ -87,10 +87,43 @@ const getProductAndReviews = wrapper(async (req, res) => {
     res.status(StatusCodes.OK).json({ message: productAndReviews });
 });
 
+const createProductTag = wrapper(async (req, res) => {
+    const { name } = req.body; 
+    if (!name) {
+        throw new BadRequestError('Product tag name is required');
+    }
+    const createdTag = await ProductTag.create({ name }); 
+    res.status(StatusCodes.OK).json({ message: createdTag }); 
+    
+}); 
+
+const removeTag = wrapper(async (req, res) => {
+    const { id } = req.params;
+    // find the tag and delete it 
+    await ProductTag.destroy({ where: { id } });
+    res.status(StatusCodes.OK).json({ message: 'Product tag deleted' });
+}); 
+
+const updateProductTag = wrapper(async (req, res) => {
+    const { name } = req.body; 
+    const { id } = req.params; 
+    //find the product with this id 
+    const productTag = await ProductTag.findOne({ where: { id } });
+    if (!productTag) throw new NotFoundError(`No product tag with this id : ${id} found`);
+    
+    // update the product tag 
+    productTag.name = name; 
+    productTag.save(); 
+    res.status(StatusCodes.OK).json({ message: "Product tag updated" }); 
+})
+
 module.exports = {
     getAllProducts,
     postProduct,
     updateProduct,
     deleteProduct,
-    getProductAndReviews
+    getProductAndReviews, 
+    createProductTag, 
+    removeTag, 
+    updateProductTag
 };
