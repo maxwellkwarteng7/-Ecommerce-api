@@ -125,12 +125,22 @@ const updateProductTag = wrapper(async (req, res) => {
 
 // get product by tag 
 const getProductByTag = wrapper(async (req, res) => {
-    const { tag } = req.query.tag; 
+    const {tag} = req.query;
     if (!tag) {
         throw new BadRequestError('Query string tag was not provided or is empty'); 
     }
     // use the products using the tag
-    res.status(200).json({ message: 'this works '}); 
+    const productTag = await ProductTag.findOne({
+        where: { name: tag }, include: [
+            {
+                model: Product,
+                as: 'products'
+            }
+        ]
+    });
+    if (!productTag) throw new NotFoundError('No product tag found'); 
+    
+    res.status(StatusCodes.OK).json(productTag.products); 
 });
 
 module.exports = {
