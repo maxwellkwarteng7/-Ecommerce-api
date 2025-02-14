@@ -35,7 +35,7 @@ const updateProduct = wrapper(async (req, res) => {
     const { id } = req.params;
     const { price, description, name, categoryId, stock, tagId, discountPrice } = req.body;
     
-    if (!price || !description || !name || !categoryId || !stock | !req.file) {
+    if (!price || !description || !name || !categoryId || !stock || !tagId || !discountPrice) {
         throw new BadRequestError('All fields are required');
     }
     // find the product 
@@ -55,7 +55,7 @@ const updateProduct = wrapper(async (req, res) => {
         stock,
         description
     });
-    
+
     if (req.file) {
         product.image = req.file.path;
     }
@@ -123,6 +123,12 @@ const updateProductTag = wrapper(async (req, res) => {
     res.status(StatusCodes.OK).json({ message: "Product tag updated" }); 
 })
 
+// get product by tag 
+const getProductByTag = wrapper(async (req, res) => {
+    const { tag } = req.query.tag;  
+    console.log(tag); 
+});
+
 module.exports = {
     getAllProducts,
     postProduct,
@@ -131,5 +137,6 @@ module.exports = {
     getProductAndReviews, 
     createProductTag, 
     removeTag, 
-    updateProductTag
+    updateProductTag,
+    getProductByTag
 };
