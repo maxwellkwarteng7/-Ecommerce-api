@@ -90,7 +90,7 @@ const getProductAndReviews = wrapper(async (req, res) => {
     if (!productAndReviews) {
         throw new NotFoundError(`No product with this id : ${id} found`);
     }
-    res.status(StatusCodes.OK).json({ message: productAndReviews });
+    res.status(StatusCodes.OK).json(productAndReviews);
 });
 
 const createProductTag = wrapper(async (req, res) => {
@@ -142,6 +142,7 @@ const getProductByTag = wrapper(async (req, res) => {
     
     res.status(StatusCodes.OK).json(productTag.products); 
 });
+
 
 module.exports = {
     getAllProducts,

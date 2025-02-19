@@ -19,6 +19,7 @@ const categoryRoute = require('./routes/category');
 const cartRoute = require('./routes/cart'); 
 const paymentRoute = require('./routes/payment'); 
 const validateToken = require('./middlewares/tokenValidator');
+const reviewsRoute = require('./routes/reviews'); 
 
 
 
@@ -34,7 +35,8 @@ app.use('/api', homeRoutes);
 app.use('/api/product', ProductsRoute); 
 app.use('/api/category', categoryRoute); 
 app.use('/api/cart', cartRoute); 
-app.use('/api/paystack',validateToken ,  paymentRoute); 
+app.use('/api/paystack', validateToken, paymentRoute); 
+app.use('api/review', validateToken ,  reviewsRoute); 
 
 
 
