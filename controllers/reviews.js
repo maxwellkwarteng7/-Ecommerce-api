@@ -19,5 +19,16 @@ const addReview = wrapper(async (req, res) => {
 
 // update a review 
 const updateReview = wrapper(async (req, res) => {
-    
+    const { id , comment  , rating } = req.body;
+    // find the review 
+    const singleReview = await Reviews.findOne({ where: { id } }); 
+    if (!singleReview) throw new NotFoundError('No review with this id was found'); 
+    Object.assign(singleReview, {
+        comment,
+        rating
+    });
+    singleReview.save(); 
+    res.status(StatusCodes.OK).json({ message: "Review updated" }); 
+
+
 })
