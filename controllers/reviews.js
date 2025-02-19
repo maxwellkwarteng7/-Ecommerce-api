@@ -1,7 +1,8 @@
 const { StatusCodes } = require("http-status-codes");
 const wrapper = require("express-async-handler");
-const { Reviews } = require("../models");
+const { Reviews , User } = require("../models");
 const { BadRequestError, NotFoundError } = require("../errors");
+const { Model } = require("sequelize");
 
 
 
@@ -35,10 +36,39 @@ const updateReview = wrapper(async (req, res) => {
 
 const deleteReview = wrapper(async (req, res) => {
     const { id } = req.params;
-    if (!id) throw new BadRequestError('Provide an id for the review you want to delete'); 
+    if (!id) throw new BadRequestError('Provide an id for the review you want to delete');
     // find and delete the review 
-    const review = await Reviews.destroy({ where: { id } }); 
-    if (review === 0) throw new NotFoundError('Review not found'); 
-    res.status(StatusCodes.OK).json({ message: "Review deleted successfully" }); 
+    const review = await Reviews.destroy({ where: { id } });
+    if (review === 0) throw new NotFoundError('Review not found');
+    res.status(StatusCodes.OK).json({ message: "Review deleted successfully" });
+}); 
 
-})
+// fetch product reviews 
+const productReviews = wrapper(async (req, res) => {
+    const { productId } = req.params; 
+    if (!productId) throw new BadRequestError('No productId provided');
+    let limit = parseInt(req.query.limit) || 5; 
+    let page = parseInt(req.query.page) || 1; 
+    let offset = (page - 1) * limit; 
+
+    //fetching product with limit 
+    const { count, rows: reviews } = await Reviews.findAndCountAll({
+        where: { productId },
+        include: [
+            {
+                Model: User,
+                attributes: ['username']
+            }
+        ],
+        limit,
+        offset,
+        order: [['createdAt', 'DESC']]
+    });
+
+    res.status(StatusCodes.OK).json({
+        totalReviews: count,
+        currentPage: page,
+        totalPages: Math.ceil(count / limit),
+        reviews,
+    });
+});
