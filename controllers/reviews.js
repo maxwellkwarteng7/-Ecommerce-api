@@ -19,16 +19,26 @@ const addReview = wrapper(async (req, res) => {
 
 // update a review 
 const updateReview = wrapper(async (req, res) => {
-    const { id , comment  , rating } = req.body;
+    const { comment, rating } = req.body;
+    const { id } = req.params; 
+    if (!id || !comment || !rating) throw new BadRequestError('comment , rating and id are required fields for a review update'); 
     // find the review 
-    const singleReview = await Reviews.findOne({ where: { id } }); 
-    if (!singleReview) throw new NotFoundError('No review with this id was found'); 
+    const singleReview = await Reviews.findOne({ where: { id } });
+    if (!singleReview) throw new NotFoundError('No review with this id was found');
     Object.assign(singleReview, {
         comment,
         rating
     });
-    singleReview.save(); 
-    res.status(StatusCodes.OK).json({ message: "Review updated" }); 
+    singleReview.save();
+    res.status(StatusCodes.OK).json({ message: "Review updated" });
+});
 
+const deleteReview = wrapper(async (req, res) => {
+    const { id } = req.params;
+    if (!id) throw new BadRequestError('Provide an id for the review you want to delete'); 
+    // find and delete the review 
+    const review = await Reviews.destroy({ where: { id } }); 
+    if (review === 0) throw new NotFoundError('Review not found'); 
+    res.status(StatusCodes.OK).json({ message: "Review deleted successfully" }); 
 
 })
