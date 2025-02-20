@@ -1,14 +1,16 @@
 const { StatusCodes } = require("http-status-codes");
 const wrapper = require("express-async-handler");
 const { Reviews , User } = require("../models");
-const { BadRequestError, NotFoundError } = require("../errors");
-const { Model } = require("sequelize");
+const { BadRequestError, NotFoundError, UnauthorizedError } = require("../errors");
+
 
 
 
 const addReview = wrapper(async (req, res) => {
     const { rating, comment, productId } = req.body; 
-    const { userId } = req;
+    const { userId, role } = req;
+    if (role === 'admin') throw new UnauthorizedError('Create account as a customer or login as one to add a review');
+
     if (!rating || !comment || !productId) throw new BadRequestError('rating , comment and productId are required fields'); 
 
     // Add  the review
@@ -56,15 +58,14 @@ const productReviews = wrapper(async (req, res) => {
         where: { productId },
         include: [
             {
-                Model: User,
-                attributes: ['username']
-            }
+                model: User, 
+                attributes : ['username']
+           }
         ],
         limit,
         offset,
         order: [['createdAt', 'DESC']]
     });
-
     res.status(StatusCodes.OK).json({
         totalReviews: count,
         currentPage: page,
@@ -72,3 +73,11 @@ const productReviews = wrapper(async (req, res) => {
         reviews,
     });
 });
+
+
+module.exports = {
+    productReviews, 
+    addReview, 
+    updateReview, 
+    deleteReview
+}

@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
         as: 'orders', 
         foreignKey : 'userId'
       }) 
-      User.hasOne(models.Reviews, {
+      User.hasMany(models.Reviews, {
         foreignKey: 'userId',
         as: 'user_Review'
       }); 

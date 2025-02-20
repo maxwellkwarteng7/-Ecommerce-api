@@ -19,8 +19,9 @@ const validateToken = wrapper(async (req, res, next) => {
                 throw new UnauthorizedError('Token is invalidated , please login in again'); 
             }
             const decoded = jwt.verify(token, process.env.JWT_SECRET); 
-            const { userId } = decoded; 
-            req.userId = userId;  
+            const { userId  , role  } = decoded; 
+            req.userId = userId; 
+            req.role = role;
             next(); 
         } catch (error) {
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Invalid or expired token , login again please ! " }); 
