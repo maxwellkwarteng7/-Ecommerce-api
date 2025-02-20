@@ -76,21 +76,16 @@ const deleteProduct = wrapper(async (req, res) => {
         .json({ messsage: 'Product deleted successfully'});
 });
 
-const getProductAndReviews = wrapper(async (req, res) => {
+const getSingleProduct = wrapper(async (req, res) => {
     const { id } = req.params;
     // find the product with it's reviews 
-    const productAndReviews = await Product.findOne({
-        where: { id }, include: [
-            {
-                model: Reviews,
-                as: 'reviews'
-            }
-        ]
+    const singleProduct = await Product.findOne({
+        where: { id }
     });
-    if (!productAndReviews) {
+    if (!singleProduct) {
         throw new NotFoundError(`No product with this id : ${id} found`);
     }
-    res.status(StatusCodes.OK).json(productAndReviews);
+    res.status(StatusCodes.OK).json(singleProduct);
 });
 
 const createProductTag = wrapper(async (req, res) => {
@@ -149,7 +144,7 @@ module.exports = {
     postProduct,
     updateProduct,
     deleteProduct,
-    getProductAndReviews, 
+    getSingleProduct, 
     createProductTag, 
     removeTag, 
     updateProductTag,

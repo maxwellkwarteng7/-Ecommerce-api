@@ -1,5 +1,5 @@
 const { StatusCodes } = require("http-status-codes")
-const { ValidationError } = require("sequelize");
+const { ValidationError  } = require("sequelize");
 const CustomApiError = require("../errors/customApiError");
 
 const errorhandler = (req, res,  err) => {

@@ -17,9 +17,10 @@ module.exports = (sequelize, DataTypes) => {
       })
 
       Reviews.belongsTo(models.Product, {
-        foreignKey: 'productId', 
-        onDelete : 'CASCADE'
-      })
+        foreignKey: 'productId',
+        onDelete: 'CASCADE',
+        as: 'user'
+      });
     }
   }
   Reviews.init({
