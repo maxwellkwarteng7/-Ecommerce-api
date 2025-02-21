@@ -120,7 +120,11 @@ const updateProductTag = wrapper(async (req, res) => {
 
 // get product by tag 
 const getProductByTag = wrapper(async (req, res) => {
-    const {tag} = req.query;
+    const { tag } = req.query;
+    let limit = parseInt(req.query.limit) || 9; 
+    let page = parseInt(req.query.page) || 1; 
+    let offset = (page - 1) * limit; 
+
     if (!tag) {
         throw new BadRequestError('Query string tag was not provided or is empty'); 
     }
@@ -131,7 +135,10 @@ const getProductByTag = wrapper(async (req, res) => {
                 model: Product,
                 as: 'products'
             }
-        ]
+            
+        ], 
+        limit,  
+        offset
     });
     if (!productTag) throw new NotFoundError('No product tag found'); 
     
