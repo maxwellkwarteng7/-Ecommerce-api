@@ -121,7 +121,7 @@ const updateProductTag = wrapper(async (req, res) => {
 // get product by tag 
 const getProductByTag = wrapper(async (req, res) => {
     const { tag } = req.query;
-    let limit = parseInt(req.query.limit) || 9; 
+    let limit = parseInt(req.query.limit) || 12; 
     let page = parseInt(req.query.page) || 1; 
     let offset = (page - 1) * limit; 
 
@@ -140,8 +140,13 @@ const getProductByTag = wrapper(async (req, res) => {
         offset
     });
     if (!productTag) throw new NotFoundError('No product tag found'); 
+    let productCount = productTag.products.length; 
     
-    res.status(StatusCodes.OK).json(productTag.products); 
+    res.status(StatusCodes.OK).json({
+        totalPages: Math.ceil(productCount / limit), 
+        currentPage: page, 
+        products : productTag.products
+    }); 
 });
 
 
