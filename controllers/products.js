@@ -135,7 +135,6 @@ const getProductByTag = wrapper(async (req, res) => {
                 model: Product,
                 as: 'products'
             }
-            
         ], 
         limit,  
         offset

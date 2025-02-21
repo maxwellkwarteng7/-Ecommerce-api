@@ -1,14 +1,12 @@
 const { StatusCodes } = require("http-status-codes");
 const wrapper = require("express-async-handler");
 const { Category, Product } = require("../models");
+const { BadRequestError, NotFoundError } = require("../errors");
 
 const createCategory = wrapper(async (req, res) => {
   const { name } = req.body;
-  if (!req.file || !name) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ error: "name and image fields are  required" });
-  }
+  if (!req.file || !name) throw new BadRequestError('name and image fields are  required'); 
+
   const image = req.file.path;
 
   const category = await Category.create({ name, image });
@@ -48,17 +46,11 @@ const updateCategory = wrapper(async (req, res) => {
 const deleteCategory = wrapper(async (req, res) => {
   const { id } = req.params;
   // find and delete the category
-  if (!id) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ error: "No id provided" });
-  }
+  if (!id) throw new BadRequestError('No id provided'); 
+
   const deletedCategory = await Category.destroy({ where: { id } });
-  if (deletedCategory === 0) {
-    return res
-      .status(StatusCodes.NOT_FOUND)
-      .json({ error: "category with this id not found" });
-  }
+  if (deletedCategory === 0) throw new NotFoundError('category with this id not found');
+
   res.status(StatusCodes.OK).json({
     message: "Category successfully deleted",
   });
@@ -66,11 +58,11 @@ const deleteCategory = wrapper(async (req, res) => {
 
 const getCategoryProducts = wrapper(async (req, res) => {
   const { categoryId } = req.params;
-  if (!categoryId) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ error: "No category Id provided" });
-  }
+  let limit = parseInt(req.query.limit) || 12;
+  let page = parseInt(req.query.page) || 1; 
+  let offset = (page - 1) * limit; 
+  if (!categoryId) throw new BadRequestError('No category Id provided'); 
+
   const categoryProducts = await Category.findOne({
     where: { id: categoryId },
     include: [
@@ -79,8 +71,19 @@ const getCategoryProducts = wrapper(async (req, res) => {
         as: "products",
       },
     ],
+    limit, 
+    offset, 
+    order: [['createdAt', 'DESC']]
   });
-  res.status(StatusCodes.OK).json({ message: categoryProducts });
+  if (!categoryProducts) throw new NotFoundError(`Category with this id : ${categoryId} was found`); 
+
+  const productCount = categoryProducts.products.length; 
+
+  res.status(StatusCodes.OK).json({
+    currentPage: page, 
+    totalPages: Math.ceil(productCount / limit), 
+    products : categoryProducts.products
+  });
 });
 
 const allCategories = wrapper(async (req, res) => {
