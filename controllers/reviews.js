@@ -1,6 +1,6 @@
 const { StatusCodes } = require("http-status-codes");
 const wrapper = require("express-async-handler");
-const { Reviews , User } = require("../models");
+const { Reviews , User , Product } = require("../models");
 const { BadRequestError, NotFoundError, UnauthorizedError } = require("../errors");
 
 
@@ -12,11 +12,15 @@ const addReview = wrapper(async (req, res) => {
     if (role === 'admin') throw new UnauthorizedError('Create account as a customer or login as one to add a review');
 
     if (!rating || !comment || !productId) throw new BadRequestError('rating , comment and productId are required fields'); 
+    // first verify if the product Id exist 
+    const product = await Product.findOne({ where: { id: productId } }); 
+    if (!product) throw new NotFoundError(`No product with id ${productId} found`); 
 
     // Add  the review
     const review = await Reviews.create({ userId, rating, comment, productId }); 
 
-    res.status(StatusCodes.CREATED).json({ message: "Review Added successfully" });
+
+    res.status(StatusCodes.CREATED).json({ message: "Review Added successfully" , review  });
 
 }); 
 
