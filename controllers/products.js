@@ -133,11 +133,12 @@ const getProductByTag = wrapper(async (req, res) => {
         where: { name: tag }, include: [
             {
                 model: Product,
-                as: 'products'
-            }
+                as: 'products', 
+            }, 
+            limit,  
+            offset
         ], 
-        limit,  
-        offset
+       
     });
     if (!productTag) throw new NotFoundError('No product tag found'); 
     let productCount = productTag.products.length; 

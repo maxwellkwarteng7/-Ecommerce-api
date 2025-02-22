@@ -3,6 +3,7 @@ const wrapper = require("express-async-handler");
 const { Category, Product } = require("../models");
 const { BadRequestError, NotFoundError } = require("../errors");
 
+
 const createCategory = wrapper(async (req, res) => {
   const { name } = req.body;
   if (!req.file || !name) throw new BadRequestError('name and image fields are  required'); 
@@ -59,30 +60,32 @@ const deleteCategory = wrapper(async (req, res) => {
 const getCategoryProducts = wrapper(async (req, res) => {
   const { categoryId } = req.params;
   let limit = parseInt(req.query.limit) || 12;
-  let page = parseInt(req.query.page) || 1; 
-  let offset = (page - 1) * limit; 
-  if (!categoryId) throw new BadRequestError('No category Id provided'); 
+  let page = parseInt(req.query.page) || 1;
+  let offset = (page - 1) * limit;
 
-  const categoryProducts = await Category.findOne({
-    where: { id: categoryId },
+  if (!categoryId) throw new BadRequestError('No category Id provided');
+
+  const productCount = await Product.count({ where: { categoryId } }); 
+
+
+
+  const result = await Category.findOne({
+    where : {id : categoryId} , 
     include: [
       {
         model: Product,
-        as: "products",
+        as: 'products', 
+        limit,
+        offset, 
       },
-    ],
-    limit, 
-    offset, 
-    order: [['createdAt', 'DESC']]
+    ]
   });
-  if (!categoryProducts) throw new NotFoundError(`Category with this id : ${categoryId} was found`); 
-
-  const productCount = categoryProducts.products.length; 
-
+    
   res.status(StatusCodes.OK).json({
     currentPage: page, 
-    totalPages: Math.ceil(productCount / limit), 
-    products : categoryProducts.products
+    products: result ,  
+    totalPages: Math.ceil(productCount / limit),
+    products : result.products
   });
 });
 
