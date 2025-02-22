@@ -5,9 +5,11 @@ const { BadRequestError, NotFoundError } = require("../errors");
 
 const getAllProducts = wrapper(async (req, res) => {
     // fetch products 
-    const products = await Product.findAll({});
+    const products = await Product.findAndCountAll({});
     // send products response 
-    res.status(StatusCodes.OK).json({ messsage: products });
+    res.status(StatusCodes.OK).json({
+        products
+    });
 });
 
 const postProduct = wrapper(async (req, res) => {
@@ -128,25 +130,26 @@ const getProductByTag = wrapper(async (req, res) => {
     if (!tag) {
         throw new BadRequestError('Query string tag was not provided or is empty'); 
     }
-    // use the products using the tag
-    const productTag = await ProductTag.findOne({
+
+    // find the products using the tag
+    const tagProducts = await ProductTag.findOne({
         where: { name: tag }, include: [
             {
                 model: Product,
                 as: 'products', 
+                limit,  
+                offset , 
+                order: [['createdAt' , 'DESC']]
             }, 
-            limit,  
-            offset
         ], 
-       
     });
-    if (!productTag) throw new NotFoundError('No product tag found'); 
-    let productCount = productTag.products.length; 
-    
+
+    const productCount = tagProducts && (await Product.count({ where: { tagId: tagProducts.id } }));
+     
     res.status(StatusCodes.OK).json({
-        totalPages: Math.ceil(productCount / limit), 
         currentPage: page, 
-        products : productTag.products
+        totalPages : Math.ceil(productCount / limit), 
+        products : tagProducts.products 
     }); 
 });
 
