@@ -68,7 +68,6 @@ const getCategoryProducts = wrapper(async (req, res) => {
   const productCount = await Product.count({ where: { categoryId } }); 
 
 
-
   const result = await Category.findOne({
     where : {id : categoryId} , 
     include: [
@@ -77,6 +76,7 @@ const getCategoryProducts = wrapper(async (req, res) => {
         as: 'products', 
         limit,
         offset, 
+        order : [['createdAt' , 'DESC']]
       },
     ]
   });
