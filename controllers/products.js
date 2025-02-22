@@ -4,11 +4,20 @@ const {  Product , Reviews , ProductTag } = require("../models");
 const { BadRequestError, NotFoundError } = require("../errors");
 
 const getAllProducts = wrapper(async (req, res) => {
+    let page = parseInt(req.query.page) || 1; 
+    let limit = parseInt(req.query.limit) || 12; 
+    let offset = (page - 1) * limit; 
     // fetch products 
-    const products = await Product.findAndCountAll({});
+    const { count, rows: products } = await Product.findAndCountAll({
+        limit, 
+        offset,
+        order : [['createdAt' , 'DESC']]
+    });
     // send products response 
     res.status(StatusCodes.OK).json({
-        products
+        currentPage: page, 
+        totalPages : Math.ceil(count / limit), 
+        products 
     });
 });
 
