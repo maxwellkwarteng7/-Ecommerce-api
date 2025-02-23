@@ -83,7 +83,6 @@ const getCategoryProducts = wrapper(async (req, res) => {
     
   res.status(StatusCodes.OK).json({
     currentPage: page, 
-    products: result ,  
     totalPages: Math.ceil(productCount / limit),
     products : result.products
   });
