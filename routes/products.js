@@ -7,10 +7,10 @@ const upload = require('../middlewares/upload');
 const router = express.Router();
 
 
-
+router.get('/tag/products', getProductByTag); 
 router.get('/', getAllProducts);
 router.get('/:id', getSingleProduct); 
-router.get('/tag/products', getProductByTag); 
+
 // use the admin middleware after this route 
 router.use(adminMiddleware);
 router.post('/', upload.single('image'), postProduct);
@@ -19,11 +19,6 @@ router.delete('/:id', deleteProduct);
 router.post('/tag', createProductTag); 
 router.delete('/tag/:id', removeTag); 
 router.put('/tag/:id', updateProductTag); 
-
-
-// create a category 
-
-
 
 
 module.exports = router; 
