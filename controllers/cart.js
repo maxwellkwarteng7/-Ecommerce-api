@@ -24,10 +24,10 @@ async function addProductToCart(cartItems, userId) {
 
             if (cartItem) {
                 cartItem.quantity = item.quantity;
-                cartItem.subTotal = cartItem.quantity * product.price;
+                cartItem.subTotal = cartItem.quantity * (product.discountPrice ?? product.price);
                 await cartItem.save({ transaction });
             } else {
-                await CartItems.create({ cartId, productId: item.productId, quantity: item.quantity, subTotal: item.quantity * product.price }, { transaction });
+                await CartItems.create({ cartId, productId: item.productId, quantity: item.quantity, subTotal: (item.quantity * product.discountPrice ?? item.quantity * product.price) }, { transaction });
             }
         }
 
