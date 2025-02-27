@@ -1,16 +1,20 @@
-const { StatusCodes } = require("http-status-codes")
+const { StatusCodes } = require("http-status-codes");
 const { ValidationError } = require("sequelize");
 const CustomApiError = require("../errors/customApiError");
 
-const errorhandler = (req, res,  err) => {
+const errorhandler = (err, req, res, next) => {  
+    console.error(err); // Log the error for debugging
+
     if (err instanceof ValidationError) {
-       return  res.status(StatusCodes.BAD_REQUEST).json({ error: err.errors[0].message }); 
-   }
-   if (err instanceof CustomApiError) {
-      return res.status(err.statusCode).json({error : err.message}); 
-   }
-     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error : err }); 
-}
+        return res.status(StatusCodes.BAD_REQUEST).json({ error: err.errors[0].message });
+    }
 
+    if (err instanceof CustomApiError) {
+        return res.status(err.statusCode).json({ error: err.message });
+    }
 
-module.exports = errorhandler; 
+    // Catch-all for unexpected errors
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: err.message || "Something went wrong" });
+};
+
+module.exports = errorhandler;
