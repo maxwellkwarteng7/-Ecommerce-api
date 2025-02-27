@@ -3,8 +3,6 @@ const { ValidationError } = require("sequelize");
 const CustomApiError = require("../errors/customApiError");
 
 const errorhandler = (err, req, res, next) => {  
-    console.error(err); // Log the error for debugging
-
     if (err instanceof ValidationError) {
         return res.status(StatusCodes.BAD_REQUEST).json({ error: err.errors[0].message });
     }
