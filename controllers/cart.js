@@ -72,10 +72,27 @@ const userCart = wrapper(async (req, res) => {
       {
         model: CartItems,
         as: "cartItems",
+        attributes : ['quantity'], 
+        include: [
+          {
+            model: Product, 
+            as: 'product' , 
+            attributes : ['image' , 'description' , 'stock' , 'price' , 'discountPrice' , 'id' , 'name'] 
+          }
+        ],
       },
     ],
+    order: [[{ model: CartItems, as: "cartItems" }, "createdAt", "DESC"]],
   });
-  res.status(StatusCodes.OK).json(userCartItems.cartItems);
+  if (!userCartItems) {
+    return res.status(StatusCodes.OK).json([]); 
+  }
+  const userCartList = userCartItems.cartItems.map((item) => ({
+    ...item.product.get({ plain: true }),
+    quantity: item.quantity
+  })); 
+  
+  res.status(StatusCodes.OK).json(userCartList);
 });
 
 module.exports = {
