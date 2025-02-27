@@ -20,6 +20,7 @@ const cartRoute = require('./routes/cart');
 const paymentRoute = require('./routes/payment'); 
 const validateToken = require('./middlewares/tokenValidator');
 const reviewsRoute = require('./routes/reviews'); 
+const { StatusCodes } = require('http-status-codes');
 
 
 
@@ -41,9 +42,15 @@ app.use('/api/reviews',reviewsRoute);
 
 
 
+// Route does not exist 
+app.use((req, res) => {
+  res.status(StatusCodes.NOT_FOUND).json({ error: "Route not found" });
+});
 
 // error handler middleware 
 app.use(errorhandler); 
+
+
 
 const port = process.env.PORT || 8000; 
 redisClient.connect(); 
