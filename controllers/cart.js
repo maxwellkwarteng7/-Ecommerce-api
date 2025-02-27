@@ -26,7 +26,7 @@ async function addProductToCart(cartItems, userId) {
       });
 
       if (cartItem) {
-          cartItem.quantity = item.quantity;
+        cartItem.quantity = item.quantity;
         cartItem.subTotal =
           cartItem.quantity * (Number(product.discountPrice) || product.price);
         await cartItem.save({ transaction });
@@ -36,7 +36,8 @@ async function addProductToCart(cartItems, userId) {
             cartId,
             productId: item.productId,
             quantity: item.quantity,
-            subTotal: item.quantity * (Number(product.discountPrice) || product.price),
+            subTotal:
+              item.quantity * (Number(product.discountPrice) || product.price),
           },
           { transaction }
         );
@@ -72,26 +73,36 @@ const userCart = wrapper(async (req, res) => {
       {
         model: CartItems,
         as: "cartItems",
-        attributes : ['quantity'], 
+        attributes: ["quantity"],
         include: [
           {
-            model: Product, 
-            as: 'product' , 
-            attributes : ['image' , 'description' , 'stock' , 'price' , 'discountPrice' , 'id' , 'name'] 
-          }
+            model: Product,
+            as: "product",
+            attributes: [
+              "image",
+              "description",
+              "stock",
+              "price",
+              "discountPrice",
+              "id",
+              "name",
+            ],
+          },
         ],
       },
     ],
     order: [[{ model: CartItems, as: "cartItems" }, "createdAt", "DESC"]],
   });
+
   if (!userCartItems) {
-    return res.status(StatusCodes.OK).json([]); 
+    return res.status(StatusCodes.OK).json([]);
   }
+
   const userCartList = userCartItems.cartItems.map((item) => ({
     ...item.product.get({ plain: true }),
-    quantity: item.quantity
-  })); 
-  
+    quantity: item.quantity,
+  }));
+
   res.status(StatusCodes.OK).json(userCartList);
 });
 
