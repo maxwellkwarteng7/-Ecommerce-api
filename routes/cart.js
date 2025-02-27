@@ -1,10 +1,11 @@
 const express = require('express'); 
 const validateToken = require('../middlewares/tokenValidator');
-const { addToCart } = require('../controllers/cart');
+const { addToCart, userCart } = require('../controllers/cart');
 const router = express.Router(); 
 
 
-router.post('/' , validateToken, addToCart);
+router.post('/', validateToken, addToCart);
+router.get('/' , validateToken , userCart ); 
 
 
 
