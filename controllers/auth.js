@@ -98,10 +98,10 @@ const sendOneTimePin = wrapper(async (req, res) => {
   }
   if (type === "forgot_password") {
     if (!password) {
-      throw new BadRequestError('password field is required'); 
+      throw new BadRequestError('Password field is required'); 
     }
   }
-  // fetch the usr
+  // fetch the user
   const user = await User.findOne({
     where: { email },
     include: [
