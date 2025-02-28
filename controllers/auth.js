@@ -2,7 +2,6 @@ const { StatusCodes } = require("http-status-codes");
 const wrapper = require("express-async-handler");
 const { User, oneTimePin } = require("../models");
 const jwt = require("jsonwebtoken");
-const { ValidationError } = require("sequelize");
 const client = require("../service/redis");
 const emailService = require("../service/emailService");
 const {
@@ -14,7 +13,7 @@ const {
 const register = wrapper(async (req, res) => {
   const { username, email, password } = req.body;
   if (!username || !email || !password) {
-    return res.status(StatusCodes.BAD_REQUEST).json({ error: 'email , username and  password are required fields' });
+    throw new BadRequestError("All fields are required");
   }
   const user = await User.create({ username, email, password });
   emailService(user, "Email Verification", "verify your email");
@@ -26,17 +25,17 @@ const register = wrapper(async (req, res) => {
 const login = wrapper(async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    return res.status(StatusCodes.BAD_REQUEST).json({ error: 'email and password fields are required' });
+    throw new BadRequestError("email and password fields are required");
   }
 
   const user = await User.findOne({ where: { email } });
   if (!user) {
-    return res.status(StatusCodes.NOT_FOUND).json({ error: 'No user with this credentials found' });
+    throw new NotFoundError(`No user with this credentials found`);
   }
   const isMatch =
     user && (await user.validatePassword(password, user.password));
   if (!isMatch) {
-    return res.status(StatusCodes.UNAUTHORIZED).json({ error: 'Invalid or wrong password'});
+    throw new UnauthorizedError("Invalid or incorrect password");
   }
   const token = jwt.sign(
     { userId: user.id, role: user.role },
@@ -58,13 +57,13 @@ const login = wrapper(async (req, res) => {
 const logout = wrapper(async (req, res) => {
   const { authorization } = req.headers;
   if (!authorization || !authorization.startsWith("Bearer")) {
-    return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid or no token provided' });
+    throw new BadRequestError("Invalid or no token provided");
   }
   const token = authorization.split(" ")[1];
 
   const verifiedToken = jwt.verify(token, process.env.JWT_SECRET);
   if (!verifiedToken || !verifiedToken.exp) {
-    return res.status(StatusCodes.UNAUTHORIZED).json({ error: 'Invalid Token' });
+    throw new UnauthorizedError("Invalid Token");
   }
 
   // creating an expiration time
@@ -80,11 +79,11 @@ const logout = wrapper(async (req, res) => {
 const initiateResetPassword = wrapper(async (req, res) => {
   const { email } = req.body;
   if (!email) {
-    return res.status(StatusCodes.BAD_REQUEST).json({ error: 'email field is required' }); 
+    throw new BadRequestError('Email field is required'); 
   }
   const user = await User.findOne({ where: { email } });
   if (!user) {
-    return res.status(StatusCodes.NOT_FOUND).json({ error: 'No user with email found'});
+    throw new NotFoundError('No user with this email found'); 
   }
   emailService(user, "Reset Password Pin", "reset your password");
   res.status(StatusCodes.OK).json({ message: "Reset Password pin sent" });
@@ -94,11 +93,11 @@ const initiateResetPassword = wrapper(async (req, res) => {
 const sendOneTimePin = wrapper(async (req, res) => {
   const { pin, email, password, type } = req.body;
   if (!pin || !email || !type) {
-    return res.status(StatusCodes.BAD_REQUEST).json({ error: 'pin , email  and type are required fields' });
+    throw new BadRequestError('pin , email and type  fields are required'); 
   }
   if (type === "forgot_password") {
     if (!password) {
-      return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Password field is required' });
+      throw new BadRequestError('Password field is required'); 
     }
   }
   // fetch the user
@@ -112,7 +111,7 @@ const sendOneTimePin = wrapper(async (req, res) => {
     ],
   });
   if (!user) {
-    return res.status(StatusCodes.NOT_FOUND).json({ error: 'No user with email found'});
+    throw new BadRequestError('No user with this email found'); 
   }
   const currentTime = new Date();
 
@@ -120,7 +119,7 @@ const sendOneTimePin = wrapper(async (req, res) => {
     !user.forgotPasswordPin.pin === pin ||
     user.forgotPasswordPin.expiresIn < currentTime
   ) {
-    return res.status(StatusCodes.UNAUTHORIZED).json({ error: 'Invalid or expired pin'});
+    throw new UnauthorizedError('invalid or expired pin'); 
   }
   if (type === "forgot_password") {
     user.password = password;
@@ -138,11 +137,14 @@ const sendOneTimePin = wrapper(async (req, res) => {
 const resendPin = wrapper(async (req, res) => {
   const { email, type } = req.body;
   if (!email || !type) {
-    return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Email and type are required fields '});
+    throw new BadRequestError('Email and type field required')
   }
   const user = await User.findOne({
     where: { email },
   });
+  if (!user) {
+    throw new NotFoundError('No user with this email found'); 
+  }
   if (type === "email_verification") {
     emailService(user, "Email verification Pin", "verify your email ");
     return res

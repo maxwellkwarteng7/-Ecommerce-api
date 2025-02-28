@@ -42,11 +42,6 @@ app.use('/api/reviews',reviewsRoute);
 
 
 
-// Route does not exist 
-app.use((req, res) => {
-  res.status(StatusCodes.NOT_FOUND).json({ error: "Route not found" });
-});
-
 // error handler middleware 
 app.use(errorhandler); 
 
@@ -59,3 +54,4 @@ app.listen(port, async () => {
     await sequelize.authenticate().then(() => console.log('database connected')).catch((error) => console.log(error)); 
     console.log(`app is listening on port ${port}`);
 }); 
+
