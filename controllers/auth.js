@@ -90,12 +90,12 @@ const initiateResetPassword = wrapper(async (req, res) => {
 });
 
 //change or reset password
-const sendOneTimePin = wrapper(async (req, res) => {
+const handlePin = wrapper(async (req, res) => {
   const { pin, email, password, type } = req.body;
   if (!pin || !email || !type) {
     throw new BadRequestError('pin , email and type  fields are required'); 
   }
-  if (type === "forgot_password") {
+  if (type === "forgot-password") {
     if (!password) {
       throw new BadRequestError('Password field is required'); 
     }
@@ -121,7 +121,7 @@ const sendOneTimePin = wrapper(async (req, res) => {
   ) {
     throw new UnauthorizedError('invalid or expired pin'); 
   }
-  if (type === "forgot_password") {
+  if (type === "forgot-password") {
     user.password = password;
     user.save();
     return res
@@ -160,6 +160,6 @@ module.exports = {
   login,
   logout,
   initiateResetPassword,
-  sendOneTimePin,
+  handlePin,
   resendPin,
 };

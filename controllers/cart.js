@@ -101,6 +101,7 @@ const userCart = wrapper(async (req, res) => {
   const userCartList = userCartItems.cartItems.map((item) => ({
     ...item.product.get({ plain: true }),
     quantity: item.quantity,
+    isAuthenticated : true 
   }));
 
   res.status(StatusCodes.OK).json(userCartList);
