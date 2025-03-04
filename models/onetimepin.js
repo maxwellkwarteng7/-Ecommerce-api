@@ -18,7 +18,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   oneTimePin.init({
-    pin: DataTypes.INTEGER, 
+    pin: {
+      type: DataTypes.STRING, 
+      allowNull : false 
+    }, 
     userId: {
       type: DataTypes.INTEGER, 
     },  
