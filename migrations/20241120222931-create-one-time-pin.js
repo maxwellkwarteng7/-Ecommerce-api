@@ -10,7 +10,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       pin: {
-        type: Sequelize.INTEGER
+        type: Sequelize.STRING
       },
       userId: {
         type: Sequelize.INTEGER
