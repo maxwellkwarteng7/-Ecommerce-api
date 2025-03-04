@@ -114,10 +114,9 @@ const handlePin = wrapper(async (req, res) => {
   if (!user) {
     throw new BadRequestError('No user with this email found'); 
   }
-  const currentTime = new Date();
-  const passcode = parseInt(pin); 
+  const currentTime = new Date(); 
   if (
-    user.forgotPasswordPin.pin !== passcode ||
+    user.forgotPasswordPin.pin !== pin ||
     user.forgotPasswordPin.expiresIn < currentTime
   ) {
     throw new UnauthorizedError('invalid or expired pin'); 
