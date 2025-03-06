@@ -16,6 +16,7 @@ const initializePayment = wrapper(async (req, res) => {
         }
         ]
     }); 
+
     if (!user) {
         throw new NotFoundError("User not found"); 
     }
@@ -37,8 +38,8 @@ const initializePayment = wrapper(async (req, res) => {
             },
         }
     ); 
-
-    res.status(StatusCodes.OK).json({ message: 'Payment initiated' , data : response.data.data.authorization_url }); 
+    console.log(response); 
+    res.status(StatusCodes.OK).json({ message: 'Payment initiated' , link : response.data.data.authorization_url }); 
 }); 
 
 

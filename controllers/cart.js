@@ -107,7 +107,27 @@ const userCart = wrapper(async (req, res) => {
   res.status(StatusCodes.OK).json(userCartList);
 });
 
+// remove from cart 
+const removeFromCart = wrapper(async (req, res) => {
+  const { productId } = req.params; 
+  const { userId } = req; 
+  if (!productId) throw new BadRequestError('No id provided'); 
+
+  // find the user cart 
+  const cart = await Cart.findOne({ where: { userId } });
+
+  if (!cart) throw BadRequestError('User has no cart , add some new items to your cart'); 
+
+  // find the cart 
+  const product = await CartItems.destroy({ where: { cartId : cart.id , productId } }); 
+  
+  if (product === 0) throw new NotFoundError('No cart Item found'); 
+
+  res.status(StatusCodes.OK).json('Cart deleted'); 
+});
+
 module.exports = {
   addToCart,
   userCart,
+  removeFromCart
 };
