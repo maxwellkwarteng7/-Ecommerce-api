@@ -1,6 +1,6 @@
 const { StatusCodes } = require("http-status-codes");
 const wrapper = require("express-async-handler");
-const { Cart, Address } = require("../models");
+const { Cart, Address , User } = require("../models");
 const { BadRequestError, NotFoundError } = require("../errors");
 
 const postAddress = wrapper(async (req, res) => {
@@ -14,3 +14,28 @@ const postAddress = wrapper(async (req, res) => {
     const shippingAddress = await Address.create({ fullName, phone, address1, address2, country, city, state, cartId: cart.id, userId }); 
     res.status(StatusCodes.CREATED).json('Address created');
 }); 
+
+
+const getUserAddresses = wrapper(async (req, res) => {
+    const { userId } = req; 
+    // find the user 
+    const userAddresses = await User.findOne({
+        where: { id: userId }, include: [
+            {
+                model: Address, 
+                as: 'shipping_address', 
+                order : [['createdAt' , 'DESC']]
+        }
+    ] }); 
+    if (!userAddresses) return res.status(StatusCodes.OK).json([]); 
+    res.status(StatusCodes.OK).json(userAddresses);
+}); 
+
+
+
+
+
+module.exports = {
+    postAddress, 
+    getUserAddresses
+}
