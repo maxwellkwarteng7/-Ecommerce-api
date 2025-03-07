@@ -20,7 +20,7 @@ const cartRoute = require('./routes/cart');
 const paymentRoute = require('./routes/payment'); 
 const validateToken = require('./middlewares/tokenValidator');
 const reviewsRoute = require('./routes/reviews'); 
-const { StatusCodes } = require('http-status-codes');
+const shippingRoute = require('./routes/shipping'); 
 
 
 
@@ -38,8 +38,7 @@ app.use('/api/category', categoryRoute);
 app.use('/api/cart', cartRoute); 
 app.use('/api/paystack', validateToken, paymentRoute); 
 app.use('/api/reviews',reviewsRoute); 
-
-
+app.use('/api/shipping', shippingRoute); 
 
 
 // error handler middleware 
