@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
         as: 'cartItems'
       }); 
       Cart.hasOne(models.Address, {
-        foreignKey: 'productId', 
+        foreignKey: 'cartId', 
         as : 'cart_shipping_address'
       })
     }
