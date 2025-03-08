@@ -69,7 +69,20 @@ const updateUserAddress = wrapper(async (req, res) => {
     address.save();
 
     res.status(StatusCodes.OK).json('Address updated');
-})
+}); 
+
+// remove User address
+
+const deleteUserAddress = wrapper(async (req, res) => {
+    const { addressId } = req.params; 
+    if (!addressId) throw new BadRequestError('No address id provided'); 
+
+    // find and destroy the address 
+    const address = await Address.destroy({ where: { id: addressId } }); 
+    if (address === 0) throw new NotFoundError(`No address with this id : ${addressId} was found`); 
+
+    res.status(StatusCodes.OK).json('address deleted');
+}); 
 
 
 
@@ -78,5 +91,6 @@ const updateUserAddress = wrapper(async (req, res) => {
 module.exports = {
     postAddress,
     getUserAddresses, 
-    updateUserAddress
+    updateUserAddress, 
+    deleteUserAddress
 }
