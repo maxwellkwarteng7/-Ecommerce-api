@@ -20,10 +20,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'cartId',
         onDelete: 'CASCADE'
       }); 
-      Address.belongsTo(models.Orders, {
-        foreignKey: 'orderId', 
-        onDelete : 'CASCADE'
-      })
+  
     }
   }
   Address.init({

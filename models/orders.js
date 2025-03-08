@@ -21,11 +21,6 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'orderId',
         as: 'orderItems'
       }); 
-
-      Orders.hasOne(models.Address, {
-        foreignKey: 'orderId',
-        as: 'order_shipping_address'
-      }); 
     }
   }
   Orders.init({

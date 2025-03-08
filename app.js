@@ -38,7 +38,7 @@ app.use('/api/category', categoryRoute);
 app.use('/api/cart', cartRoute); 
 app.use('/api/paystack', validateToken, paymentRoute); 
 app.use('/api/reviews',reviewsRoute); 
-app.use('/api/shipping', shippingRoute); 
+app.use('/api/shipping', validateToken  , shippingRoute); 
 
 
 // error handler middleware 
