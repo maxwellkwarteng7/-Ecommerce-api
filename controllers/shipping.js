@@ -32,10 +32,10 @@ const getUserAddresses = wrapper(async (req, res) => {
         where: { id: userId }, include: [
             {
                 model: Address,
-                as: 'Shipping_address',
-                order: [['createdAt', 'DESC']]
+                as: 'Shipping_address', 
             }
-        ]
+        ], 
+        order: [[{ model: Address, as: 'Shipping_address' }, 'createdAt', 'DESC']]
     });
     if (!userAddresses) return res.status(StatusCodes.OK).json([]);
     res.status(StatusCodes.OK).json(userAddresses.Shipping_address);
