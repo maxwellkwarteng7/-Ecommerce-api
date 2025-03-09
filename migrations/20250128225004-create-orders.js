@@ -25,6 +25,10 @@ module.exports = {
         type: Sequelize.STRING, 
         allowNull: false
       }, 
+      totalOrderPrice: {
+        type: Sequelize.INTEGER, 
+        allowNull: false
+      }, 
       transactionRef: {
         type: Sequelize.STRING, 
         allowNull: false

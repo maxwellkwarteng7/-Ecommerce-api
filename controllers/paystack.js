@@ -1,6 +1,6 @@
 const wrapper = require('express-async-handler'); 
 const { StatusCodes } = require('http-status-codes'); 
-const { User , Cart } = require('../models'); 
+const { User , Cart , CartItems } = require('../models'); 
 const { NotFoundError, BadRequestError } = require('../errors');
 const axios = require('axios');
 require('dotenv').config(); 
@@ -63,7 +63,18 @@ const verifyPayment = wrapper(async (req, res) => {
         }
     }); 
     if (response.data.data.status === 'success') {
-        // turn cart into orders here
+        // find the user cart and create an order for the user 
+        const userCart = await Cart.findOne({
+            where: { id: userId }, include: [
+                {
+                    model: CartItems, 
+                    as : 'cartItems'
+            }
+            ],
+            order : [[{model : CartItems , as : 'cartItems'} , "createdAt" ,"DESC"]]
+        }); 
+        // find the user order or create one for the user 
+        const paymentDate = new Date.now();
 
         
         // do what you gotta do here 

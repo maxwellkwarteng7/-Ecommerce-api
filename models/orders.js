@@ -20,6 +20,12 @@ module.exports = (sequelize, DataTypes) => {
       Orders.hasMany(models.OrderItems, {
         foreignKey: 'orderId',
         as: 'orderItems'
+      });
+      
+      Orders.hasOne(models.Address, {
+        foreignKey : 'id' , 
+        sourceKey: 'addressId',
+        as: 'order_shipping_address'
       }); 
     }
   }
@@ -43,6 +49,10 @@ module.exports = (sequelize, DataTypes) => {
     transactionRef: {
       type: DataTypes.STRING, 
       allowNull: false
+    }, 
+    addressId :  {
+      type: DataTypes.INTEGER, 
+      allowNull : false 
     }, 
     paymentDate: {
       type : DataTypes.DATE, 
