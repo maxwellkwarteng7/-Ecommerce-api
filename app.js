@@ -4,7 +4,8 @@ const cors = require("cors");
 require('dotenv').config();
 
 const corsOptions = {
-    origin: "http://localhost:4200",
+  origin: "http://localhost:4200",
+  origin : "https://fb08-154-161-109-113.ngrok-free.app"
   };
 
 

@@ -46,7 +46,11 @@ const initializePayment = wrapper(async (req, res) => {
 // verify the payment 
 const verifyPayment = wrapper(async (req, res) => {
     const { reference } = req.params; 
-    if (!reference) {
+    const { addressId } = req.body; 
+    const { userId } = req; 
+    if (!addressId) throw new BadRequestError('user address id is needed to create order'); 
+
+    if (!reference)  {
         throw new BadRequestError("No payment 'reference' provided"); 
     }
     // we make a post request to paystack to verify the status of the payment with this 'reference'
@@ -58,9 +62,9 @@ const verifyPayment = wrapper(async (req, res) => {
             "Content-Type": "application/json"
         }
     }); 
-
-    if (response.data.status === 'success') {
+    if (response.data.data.status === 'success') {
         // turn cart into orders here
+
         
         // do what you gotta do here 
         res.status(StatusCodes.OK).json({ message: "Payment Successful" }); 
@@ -70,6 +74,20 @@ const verifyPayment = wrapper(async (req, res) => {
 }); 
 
 
+// paystac webhook 
+const paystackwebhook = wrapper(async (req, res) => {
+    const event = req.body;
+    console.log("paystack webhook received ", event); 
+
+    if (event.event === 'change.success' && event.data.status === "success") {
+        const reference = event.data.reference; 
+
+     
+    }
+    res.status(StatusCodes.OK).json('webhook received'); 
+});
+
+
 
 
 
@@ -77,5 +95,6 @@ const verifyPayment = wrapper(async (req, res) => {
 
 module.exports = {
     initializePayment, 
-    verifyPayment
+    verifyPayment, 
+    paystackwebhook
 }; 
