@@ -1,5 +1,5 @@
 const express = require('express'); 
-const {  initializePayment, verifyPayment } = require('../controllers/paystack');
+const {  initializePayment, verifyPayment, paystackwebhook } = require('../controllers/paystack');
 const validateToken = require('../middlewares/tokenValidator');
 const router = express.Router();
 
@@ -7,7 +7,8 @@ const router = express.Router();
  
 router.post('/initialize-payment', initializePayment); 
 
-router.get('/verify-payment/:reference', verifyPayment); 
+router.post('/verify-payment/:reference', verifyPayment); 
+router.post('/webhook', paystackwebhook); 
 
 
 
