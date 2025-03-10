@@ -1,6 +1,6 @@
 const wrapper = require('express-async-handler');
 const { StatusCodes } = require('http-status-codes');
-const { User, Cart, CartItems, Orders, OrderItems, Address } = require('../models');
+const { User, Cart, CartItems, Orders, OrderItems, Address, sequelize } = require('../models');
 const { NotFoundError, BadRequestError } = require('../errors');
 const axios = require('axios');
 const { where } = require('sequelize');
@@ -89,36 +89,38 @@ const paystackwebhook = wrapper(async (req, res) => {
 
 
 async function makeCartOrders(userId, paymentMethod, reference, addressId) {
-    console.log(userId); 
-    const userCart = await Cart.findOne({
-        where: { userId }, include: [
-            {
-                model: CartItems,
-                as: 'cartItems'
-            }
-        ],
-        order: [[{ model: CartItems, as: 'cartItems' }, "createdAt", "DESC"]]
-    });
-    // find the user order or create one for the user 
-    const paymentDate = Date.now(); 
-    // take the cartitems 
-    const totalPrice = userCart.totalPrice;
-    // create an order for the user
-
-    const userOder = await Orders.create({ userId, totalPrice, paymentMethod, transactionRef: reference, addressId, paymentDate });
-
-    // create the order  from the cart table 
-    for (let item of userCart.cartItems) {
-        const { quantity, id: productId } = item;
-        const orderId = userOder.id;
-        orderStatus = 'processing';
-        await OrderItems.create({
-            quantity,
-            productId,
-            orderStatus,
-            orderId
-        }, { transaction });
-    }
+    return sequelize.transaction(async (transaction) => {
+        const userCart = await Cart.findOne({
+            where: { userId }, include: [
+                {
+                    model: CartItems,
+                    as: 'cartItems'
+                }
+            ],
+            order: [[{ model: CartItems, as: 'cartItems' }, "createdAt", "DESC"]]
+        });
+        // find the user order or create one for the user 
+        const paymentDate = Date.now(); 
+        // take the cartitems 
+        const totalPrice = userCart.totalPrice;
+        // create an order for the user
+    
+        const userOder = await Orders.create({ userId, totalPrice, paymentMethod, transactionRef: reference, addressId, paymentDate });
+    
+        // create the order  from the cart table 
+        for (let item of userCart.cartItems) {
+            const { quantity, id: productId } = item;
+            const orderId = userOder.id;
+            await OrderItems.create({
+                quantity,
+                productId,
+                orderId
+            }, {
+                transaction
+            });
+        }
+    }); 
+   
 }
 
 
