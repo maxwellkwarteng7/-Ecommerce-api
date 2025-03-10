@@ -8,21 +8,11 @@ module.exports = {
      *
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
-     * 
-     **/
-    await queryInterface.addColumn('Orders', 'addressId', {
-      type: Sequelize.INTEGER, 
-      allowNull: false, 
-      references: {
-        model: "Addresses", 
-        key : 'id' 
-      }, 
-      onUpdate: 'CASCADE', 
-      onDelete : 'CASCADE'
-    })
-
-   
-
+     */
+    await queryInterface.addColumn('CartItems', 'isAuthenticated', {
+      type: Sequelize.BOOLEAN,
+      defaultValue: true,
+    }); 
   },
 
   async down (queryInterface, Sequelize) {
@@ -32,6 +22,5 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-    await queryInterface.removeColumn("Orders", "addressId");
   }
 };

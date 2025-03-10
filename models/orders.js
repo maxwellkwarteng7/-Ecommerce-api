@@ -22,9 +22,9 @@ module.exports = (sequelize, DataTypes) => {
         as: 'orderItems'
       });
       
-      Orders.hasOne(models.Address, {
+      Orders.belongsTo(models.Address, {
         foreignKey : 'addressId' , 
-        as: 'order_shipping_address'
+        as: 'order_shipping_address',
       }); 
     }
   }
@@ -37,10 +37,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.FLOAT, 
       allowNull : false 
     }, 
-    paymentStatus : {
-      type: DataTypes.STRING, 
-      allowNull: false 
-    }, 
     paymentMethod: {
       type: DataTypes.STRING, 
       allowNull: false
@@ -49,7 +45,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING, 
       allowNull: false
     }, 
-    addressId :  {
+    addressId: {
       type: DataTypes.INTEGER, 
       allowNull : false 
     }, 
