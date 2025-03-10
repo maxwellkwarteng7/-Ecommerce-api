@@ -23,8 +23,7 @@ module.exports = (sequelize, DataTypes) => {
       });
       
       Orders.hasOne(models.Address, {
-        foreignKey : 'id' , 
-        sourceKey: 'addressId',
+        foreignKey : 'addressId' , 
         as: 'order_shipping_address'
       }); 
     }
