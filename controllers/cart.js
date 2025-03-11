@@ -2,6 +2,7 @@ const { StatusCodes } = require("http-status-codes");
 const wrapper = require("express-async-handler");
 const { Cart, CartItems, Product, sequelize } = require("../models");
 const { BadRequestError, NotFoundError } = require("../errors");
+const { where } = require("sequelize");
 
 async function addProductToCart(cartItems, userId) {
   return sequelize.transaction(async (transaction) => {
@@ -130,11 +131,20 @@ const removeFromCart = wrapper(async (req, res) => {
 
 const clearCart = wrapper(async (req, res) => {
   const { userId } = req; 
-  
+  // find the user cart 
+  const userCart = await Cart.findOne({ where: { userId } }); 
+  if (!userCart) throw new BadRequestError('User has no cart'); 
+
+  // delete cartItems associated with this user userCart.id
+  const userCartItems = await CartItems.destroy({ where: { cartId: userCart.id } }); 
+  if (userCartItems === 0) throw new NotFoundError('User has not cart items'); 
+
+  res.status(StatusCodes.OK).json('Cart cleared'); 
 }); 
 
 module.exports = {
   addToCart,
   userCart,
-  removeFromCart
+  removeFromCart, 
+  clearCart
 };
