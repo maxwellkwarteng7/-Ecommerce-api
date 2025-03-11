@@ -100,8 +100,11 @@ const userCart = wrapper(async (req, res) => {
 
   const userCartList = userCartItems.cartItems.map((item) => ({
     ...item.product.get({ plain: true }),
-    quantity: item.quantity
+    quantity: item.quantity, 
+    isAuthenticated : true 
   }));
+
+  console.log(userCartList); 
 
   res.status(StatusCodes.OK).json(userCartList);
 });
@@ -124,6 +127,11 @@ const removeFromCart = wrapper(async (req, res) => {
 
   res.status(StatusCodes.OK).json('Cart deleted'); 
 });
+
+const clearCart = wrapper(async (req, res) => {
+  const { userId } = req; 
+  
+}); 
 
 module.exports = {
   addToCart,
