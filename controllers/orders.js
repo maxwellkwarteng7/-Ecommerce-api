@@ -6,6 +6,8 @@ const { Orders , User } = require('../models');
 
 const userOrders = wrapper(async (req, res) => {
     const { userId } = req; 
+    // find the user and fetch the orders 
+    
 }); 
 
 
