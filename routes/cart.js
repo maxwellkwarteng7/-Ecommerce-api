@@ -8,7 +8,7 @@ router.use(validateToken);
 router.post('/', addToCart);
 router.get('/', userCart); 
 router.delete('/:productId', removeFromCart);
-router.delete('/clearCart', clearCart); 
+router.delete('/userCart/clear', clearCart); 
 
 
 

@@ -133,12 +133,12 @@ const clearCart = wrapper(async (req, res) => {
   const { userId } = req; 
   // find the user cart 
   const userCart = await Cart.findOne({ where: { userId } }); 
+  console.log(userCart.get({ plain: true })); 
   if (!userCart) throw new BadRequestError('User has no cart'); 
 
-  // delete cartItems associated with this user userCart.id
+  // delete cartItems associated with this user using users's cart id .. userCart.id
   const userCartItems = await CartItems.destroy({ where: { cartId: userCart.id } }); 
-  if (userCartItems === 0) throw new NotFoundError('User has not cart items'); 
-
+ 
   res.status(StatusCodes.OK).json('Cart cleared'); 
 }); 
 
