@@ -21,6 +21,7 @@ const paymentRoute = require('./routes/payment');
 const validateToken = require('./middlewares/tokenValidator');
 const reviewsRoute = require('./routes/reviews'); 
 const shippingRoute = require('./routes/shipping'); 
+const ordersRoute = require('./routes/orders'); 
 
 
 
@@ -49,7 +50,7 @@ app.use(errorhandler);
 const port = process.env.PORT || 8000; 
 redisClient.connect(); 
 
-app.listen(port, async () => {
+app.listen(port, '0.0.0.0' ,  async () => {
     await sequelize.authenticate().then(() => console.log('database connected')).catch((error) => console.log(error)); 
     console.log(`app is listening on port ${port}`);
 }); 
