@@ -20,7 +20,7 @@ const userOrders = wrapper(async (req, res) => {
                 ]
             }
         ],
-        order: [[{ model: Orders, as: 'user_orders' }, 'createAt', 'DESC']]
+        order: [[{ model: Orders, as: 'user_orders' }, 'createdAt', 'DESC']]
     }); 
     if (!orders) throw new NotFoundError('User has no orders'); 
 
