@@ -14,8 +14,8 @@ const userOrders = wrapper(async (req, res) => {
                 as: 'user_orders',
                 include: [
                     {
-                        model: OrderItems,
-                        as: 'orderItems'
+                        model: Address,
+                        as: 'order_shipping_address'
                     }
                 ]
             }
@@ -24,8 +24,11 @@ const userOrders = wrapper(async (req, res) => {
     }); 
     if (!orders) throw new NotFoundError('User has no orders'); 
 
-    res.status(StatusCodes.OK).json(orders); 
+    res.status(StatusCodes.OK).json(orders.user_orders); 
 }); 
+
+
+
 
 
 
