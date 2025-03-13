@@ -28,6 +28,13 @@ const userOrders = wrapper(async (req, res) => {
 }); 
 
 
+// get the order Items 
+const getUserOrderItems = wrapper(async (req, res) => {
+    const { orderId } = req.params; 
+    if (!orderId) throw new BadRequestError('No order Id provided'); 
+    
+}); 
+
 
 
 
