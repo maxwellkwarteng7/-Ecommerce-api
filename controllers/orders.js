@@ -38,7 +38,7 @@ const getUserOrderItems = wrapper(async (req, res) => {
 
     if (!orderId) throw new BadRequestError('No order Id provided'); 
     // find the order and fetch it's related items 
-    const orderItems = await Orders.findOne({
+    const userOrderItems = await Orders.findOne({
         where: { id: orderId }, include: [
             {
                 model: OrderItems,
@@ -48,8 +48,8 @@ const getUserOrderItems = wrapper(async (req, res) => {
             }
         ]
     }); 
-    if (!orderItems) throw new NotFoundError('No order items found'); 
-    
+    if (!userOrderItems) throw new NotFoundError('No order items found'); 
+    res.status(StatusCodes.OK).json(userOrderItems.orderItems)
 
 }); 
 
