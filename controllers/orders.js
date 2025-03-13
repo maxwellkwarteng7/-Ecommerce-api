@@ -32,24 +32,31 @@ const userOrders = wrapper(async (req, res) => {
 const getUserOrderItems = wrapper(async (req, res) => {
 
     const { orderId } = req.params; 
-    const page = req.params.page | 1;
-    const limit = req.params.limit | 5; 
-    const offset = (page - 1) * limit; 
+    let page = parseInt(req.query.page) || 1;
+    let limit = parseInt(req.query.limit) || 2; 
+    let offset = (page - 1) * limit; 
 
     if (!orderId) throw new BadRequestError('No order Id provided'); 
     // find the order and fetch it's related items 
-    const userOrderItems = await Orders.findOne({
+    const  userOrderItems = await Orders.findOne({
         where: { id: orderId }, include: [
             {
                 model: OrderItems,
                 as: 'orderItems',
-                limit,
+                limit, 
                 offset
             }
-        ]
+        ], 
+        
     }); 
-    if (!userOrderItems) throw new NotFoundError('No order items found'); 
-    res.status(StatusCodes.OK).json(userOrderItems.orderItems)
+
+    const orderCount = await OrderItems.count({ where: { orderId } }); 
+
+    res.status(StatusCodes.OK).json({
+        currentPage: page,
+        totalPages: Math.ceil(orderCount / limit),
+        orderItems: userOrderItems.orderItems
+    });
 
 }); 
 
