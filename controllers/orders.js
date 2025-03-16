@@ -22,7 +22,8 @@ const userOrders = wrapper(async (req, res) => {
         ],
         order: [[{ model: Orders, as: 'user_orders' }, 'createdAt', 'DESC']]
     }); 
-    if (!orders) throw new NotFoundError('User has no orders'); 
+
+    if (!orders) throw new NotFoundError('User has no orders');
 
     res.status(StatusCodes.OK).json(orders.user_orders); 
 }); 
@@ -48,6 +49,12 @@ const getUserOrderItems = wrapper(async (req, res) => {
                     {
                         model: Product, 
                         as: 'product',
+                        attributes: [
+                            "image",
+                            "price",
+                            "discountPrice",
+                            "name",
+                        ]
                     }
                 ] , 
                 limit, 
