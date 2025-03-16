@@ -1,7 +1,7 @@
 const wrapper = require('express-async-handler'); 
 const { StatusCodes } = require('http-status-codes'); 
 const { BadRequestError, NotFoundError } = require('../errors/index'); 
-const { Orders , User , OrderItems , Address } = require('../models'); 
+const { Orders , User , OrderItems , Address,  Product } = require('../models'); 
 
 
 const userOrders = wrapper(async (req, res) => {
@@ -43,6 +43,13 @@ const getUserOrderItems = wrapper(async (req, res) => {
             {
                 model: OrderItems,
                 as: 'orderItems',
+                attributes : ['quantity','orderStatus'] , 
+                include: [
+                    {
+                        model: Product, 
+                        as: 'product',
+                    }
+                ] , 
                 limit, 
                 offset
             }

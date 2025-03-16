@@ -109,7 +109,7 @@ async function makeCartOrders(userId, paymentMethod, reference, addressId) {
     
         // create the order  from the cart table 
         for (let item of userCart.cartItems) {
-            const { quantity, id: productId } = item;
+            const { quantity, productId } = item;
             const orderId = userOder.id;
             await OrderItems.create({
                 quantity,
@@ -119,6 +119,7 @@ async function makeCartOrders(userId, paymentMethod, reference, addressId) {
                 transaction
             });
         }
+        await CartItems.destroy({ where: { cartId : userCart.id } } , {transaction}); 
     }); 
    
 }
