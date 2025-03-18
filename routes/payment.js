@@ -9,7 +9,7 @@ router.post('/paystack/initialize-payment', initializePayment);
 router.post('/paystack/verify-payment/:reference', verifyPayment); 
 router.post('/paystack/webhook', paystackwebhook); 
 router.post('/stripe/initiate-payment', initialiazeStripePayment);
-router.get('/stripe/verify-payment/:sessionId' ,verifyPayment)
+router.get('/stripe/verify-payment/:sessionId', verifyPayment);
 
 
 
