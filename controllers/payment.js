@@ -5,6 +5,7 @@ const { NotFoundError, BadRequestError } = require('../errors');
 const axios = require('axios');
 const { where } = require('sequelize');
 require('dotenv').config();
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const initializePayment = wrapper(async (req, res) => {
     const { userId } = req;
@@ -124,6 +125,44 @@ async function makeCartOrders(userId, paymentMethod, reference, addressId) {
    
 }
 
+// initiate stripe payment 
+const initialiazeStripePayment = wrapper(async (req, res) => {
+    const { userId } = req; 
+    const user = await User.findOne({
+        where: { id: userId }, include: [
+            {
+                model: Cart,
+                as: 'cart'
+            }
+        ]
+    });
+    if (!user) {
+        throw new NotFoundError("User not found");
+    }
+    //define necessary variables 
+    const totalPrice = user.cart.totalPrice;
+    const email = user.email;
+
+    // create a stripe session 
+    const session = await stripe.checkout.session.create({
+        customer_email: email,
+        payment_method_types: ['card'],
+        line_items: [
+            {
+                priceData: {
+                    currency: 'usd',
+                    unit_amount: totalPrice * 100
+                }
+            }
+        ],
+        mode: 'payment',
+        success_url: ''
+    }); 
+
+    res.status(StatusCodes.OK).json(session.url); 
+
+});
+
 
 
 
@@ -133,5 +172,6 @@ async function makeCartOrders(userId, paymentMethod, reference, addressId) {
 module.exports = {
     initializePayment,
     verifyPayment,
-    paystackwebhook
+    paystackwebhook, 
+    initialiazeStripePayment
 }; 
