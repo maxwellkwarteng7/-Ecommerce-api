@@ -127,7 +127,7 @@ async function makeCartOrders(userId, paymentMethod, reference, addressId) {
 
 // initiate stripe payment 
 const initialiazeStripePayment = wrapper(async (req, res) => {
-    const { userId } = req; 
+    const { userId } = req;
     const user = await User.findOne({
         where: { id: userId }, include: [
             {
@@ -144,24 +144,47 @@ const initialiazeStripePayment = wrapper(async (req, res) => {
     const email = user.email;
 
     // create a stripe session 
-    const session = await stripe.checkout.session.create({
+    const session = await stripe.checkout.sessions.create({
         customer_email: email,
         payment_method_types: ['card'],
         line_items: [
             {
-                priceData: {
+                price_data: {
                     currency: 'usd',
+                    product_data: {
+                        name: 'Order Products',
+                    },
                     unit_amount: totalPrice * 100
-                }
+                },
+                quantity: 1
             }
         ],
         mode: 'payment',
-        success_url: ''
-    }); 
+        success_url: 'http://localhost:4200/payment-success'
+    });
 
-    res.status(StatusCodes.OK).json(session.url); 
+    res.status(StatusCodes.OK).json(session.url);
 
+}); 
+
+const verifyStripePayment = wrapper(async (req, res) => {
+    const { sessionId } = req.params; 
+    const { addressId } = req.body;
+    const { userId } = req; 
+    if (!sessionId || addressId) throw new BadRequestError('SessionId and addressId are required'); 
+
+    // now we use the session id to check if the payment was successful 
+    const session = await stripe.checkout.sessions.retrieve(sessionId); 
+
+    // check if it's status was paid 
+    if (session.payment_status == 'paid') {
+        const createOrder = await makeCartOrders(userId, 'stripe', sessionId, addressId);
+        res.status(StatusCodes.OK).json('payment Successful');
+    } else {
+        res.status(StatusCodes.BAD_REQUEST).json('Payment verification failed'); 
+    }
 });
+
 
 
 
@@ -173,5 +196,6 @@ module.exports = {
     initializePayment,
     verifyPayment,
     paystackwebhook, 
-    initialiazeStripePayment
+    initialiazeStripePayment, 
+    verifyStripePayment
 }; 
