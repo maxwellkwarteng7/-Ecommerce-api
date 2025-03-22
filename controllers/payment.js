@@ -50,7 +50,7 @@ const verifyPayment = wrapper(async (req, res) => {
     const { reference } = req.params;
     const { addressId } = req.body;
     const { userId } = req;
-    console.log(userId); 
+    console.log(userId);
     if (!addressId) throw new BadRequestError('user address id is needed to create order');
 
     if (!reference) {
@@ -67,7 +67,7 @@ const verifyPayment = wrapper(async (req, res) => {
     });
     if (response.data.data.status === 'success') {
         const reference = response.data.data.reference;
-        const createOrder = await makeCartOrders(userId, 'paystack', reference , addressId);
+        const createOrder = await makeCartOrders(userId, 'paystack', reference, addressId);
         res.status(StatusCodes.OK).json('payment Successful');
     } else {
         res.status(StatusCodes.BAD_REQUEST).json({ error: "Payment verification failed" });
@@ -101,13 +101,13 @@ async function makeCartOrders(userId, paymentMethod, reference, addressId) {
             order: [[{ model: CartItems, as: 'cartItems' }, "createdAt", "DESC"]]
         });
         // find the user order or create one for the user 
-        const paymentDate = Date.now(); 
+        const paymentDate = Date.now();
         // take the cartitems 
         const totalPrice = userCart.totalPrice;
         // create an order for the user
-    
+
         const userOder = await Orders.create({ userId, totalPrice, paymentMethod, transactionRef: reference, addressId, paymentDate });
-    
+
         // create the order  from the cart table 
         for (let item of userCart.cartItems) {
             const { quantity, productId } = item;
@@ -120,9 +120,9 @@ async function makeCartOrders(userId, paymentMethod, reference, addressId) {
                 transaction
             });
         }
-        await CartItems.destroy({ where: { cartId : userCart.id } } , {transaction}); 
-    }); 
-   
+        await CartItems.destroy({ where: { cartId: userCart.id } }, { transaction });
+    });
+
 }
 
 // initiate stripe payment 
@@ -160,29 +160,21 @@ const initialiazeStripePayment = wrapper(async (req, res) => {
             }
         ],
         mode: 'payment',
-        success_url: 'http://localhost:4200/payment-success'
+        success_url: `https://7770-154-161-247-115.ngrok-free.app/payment-success`
     });
 
-    res.status(StatusCodes.OK).json(session.url);
+    res.status(StatusCodes.OK).json({ link: session.url });
 
-}); 
+});
 
 const verifyStripePayment = wrapper(async (req, res) => {
-    const { sessionId } = req.params; 
     const { addressId } = req.body;
-    const { userId } = req; 
-    if (!sessionId || addressId) throw new BadRequestError('SessionId and addressId are required'); 
+    const { userId } = req;
+    if (addressId) throw new BadRequestError('SessionId and addressId are required');
 
-    // now we use the session id to check if the payment was successful 
-    const session = await stripe.checkout.sessions.retrieve(sessionId); 
+    const createOrder = await makeCartOrders(userId, 'stripe', sessionId, addressId);
+    res.status(StatusCodes.OK).json('payment Successful');
 
-    // check if it's status was paid 
-    if (session.payment_status == 'paid') {
-        const createOrder = await makeCartOrders(userId, 'stripe', sessionId, addressId);
-        res.status(StatusCodes.OK).json('payment Successful');
-    } else {
-        res.status(StatusCodes.BAD_REQUEST).json('Payment verification failed'); 
-    }
 });
 
 
@@ -195,7 +187,7 @@ const verifyStripePayment = wrapper(async (req, res) => {
 module.exports = {
     initializePayment,
     verifyPayment,
-    paystackwebhook, 
-    initialiazeStripePayment, 
+    paystackwebhook,
+    initialiazeStripePayment,
     verifyStripePayment
 }; 
