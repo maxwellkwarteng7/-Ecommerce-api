@@ -4,7 +4,7 @@ const router = express.Router();
 
 
  
-router.post('/paystack/initialize-payment', initializePayment); 
+router.post('/paystack/initiate-payment', initializePayment); 
 
 router.post('/paystack/verify-payment/:reference', verifyPayment); 
 router.post('/paystack/webhook', paystackwebhook); 
