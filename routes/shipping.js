@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get('/', getUserAddresses); 
 router.post('/', postAddress); 
-router.put('/:addressId', updateUserAddress);
+router.patch('/:addressId', updateUserAddress);
 router.delete('/:addressId', deleteUserAddress);  
 
 module.exports = router; 

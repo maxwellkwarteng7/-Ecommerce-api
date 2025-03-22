@@ -14,11 +14,11 @@ router.get('/:id', getSingleProduct);
 // use the admin middleware after this route 
 router.use(adminMiddleware);
 router.post('/', upload.single('image'), postProduct);
-router.put('/:id', upload.single('image'), updateProduct);
+router.patch('/:id', upload.single('image'), updateProduct);
 router.delete('/:id', deleteProduct);
 router.post('/tag', createProductTag); 
 router.delete('/tag/:id', removeTag); 
-router.put('/tag/:id', updateProductTag); 
+router.patch('/tag/:id', updateProductTag); 
 
 
 module.exports = router; 
