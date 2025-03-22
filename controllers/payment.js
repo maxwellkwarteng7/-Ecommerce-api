@@ -160,8 +160,10 @@ const initialiazeStripePayment = wrapper(async (req, res) => {
             }
         ],
         mode: 'payment',
-        success_url: `https://7770-154-161-247-115.ngrok-free.app/payment-success`
+        success_url: `https://7770-154-161-247-115.ngrok-free.app/payment-success?session_id={CHECKOUT_SESSION_ID}`
     });
+
+    
 
     res.status(StatusCodes.OK).json({ link: session.url });
 
@@ -169,12 +171,16 @@ const initialiazeStripePayment = wrapper(async (req, res) => {
 
 const verifyStripePayment = wrapper(async (req, res) => {
     const { addressId } = req.body;
+    const  { sessionId } = req.params;
     const { userId } = req;
-    if (addressId) throw new BadRequestError('SessionId and addressId are required');
+    if (!addressId || !sessionId) throw new BadRequestError('SessionId and addressId are required');
 
-    const createOrder = await makeCartOrders(userId, 'stripe', sessionId, addressId);
-    res.status(StatusCodes.OK).json('payment Successful');
-
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    if (session.payment_status === 'paid') {
+        const createOrder = await makeCartOrders(userId, 'stripe', sessionId, addressId);
+       return  res.status(StatusCodes.OK).json('payment Successful');
+    }
+    res.status(StatusCodes.BAD_REQUEST).json('Payment verification failed');
 });
 
 
