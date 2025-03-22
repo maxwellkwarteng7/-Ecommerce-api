@@ -5,10 +5,10 @@ const router = express.Router();
 
 
 
-router.get("/:productId", productReviews); 
-router.use(validateToken); 
+router.get("/product-reviews/:productId", productReviews); 
+router.use(validateToken);
 router.post('/', addReview); 
-router.put('/:id', updateReview); 
+router.patch('/:id', updateReview); 
 router.delete("/:id", deleteReview); 
 
 

@@ -23,7 +23,7 @@ const initializePayment = wrapper(async (req, res) => {
         throw new NotFoundError("User not found");
     }
     //define necessary variables 
-    const totalPrice = user.cart.totalPrice;
+    const totalPrice = Math.round(user.cart.totalPrice);
     const email = user.email;
     const paystackURL = "https://api.paystack.co/transaction/initialize";
 
@@ -140,7 +140,7 @@ const initialiazeStripePayment = wrapper(async (req, res) => {
         throw new NotFoundError("User not found");
     }
     //define necessary variables 
-    const totalPrice = user.cart.totalPrice;
+    const totalPrice = Math.round(user.cart.totalPrice);
     const email = user.email;
 
     // create a stripe session 

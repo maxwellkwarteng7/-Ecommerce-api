@@ -37,11 +37,10 @@ app.use('/api', homeRoutes);
 app.use('/api/product', ProductsRoute); 
 app.use('/api/category', categoryRoute); 
 app.use('/api/cart', cartRoute); 
-app.use('/api', validateToken, paymentRoute); 
 app.use('/api/reviews',reviewsRoute); 
 app.use('/api/shipping', validateToken, shippingRoute); 
 app.use('/api/orders', validateToken , ordersRoute); 
-
+app.use('/api', validateToken, paymentRoute); 
 
 // error handler middleware 
 app.use(errorhandler); 
