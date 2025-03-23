@@ -3,7 +3,6 @@ const { StatusCodes } = require('http-status-codes');
 const { User, Cart, CartItems, Orders, OrderItems, Address, sequelize } = require('../models');
 const { NotFoundError, BadRequestError } = require('../errors');
 const axios = require('axios');
-const { where } = require('sequelize');
 require('dotenv').config();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
@@ -23,7 +22,7 @@ const initializePayment = wrapper(async (req, res) => {
         throw new NotFoundError("User not found");
     }
     //define necessary variables 
-    const totalPrice = Math.round(user.cart.totalPrice);
+    const totalPrice = Math.ceil(user.cart.totalPrice) * 15;
     const email = user.email;
     const paystackURL = "https://api.paystack.co/transaction/initialize";
 
@@ -140,7 +139,7 @@ const initialiazeStripePayment = wrapper(async (req, res) => {
         throw new NotFoundError("User not found");
     }
     //define necessary variables 
-    const totalPrice = Math.round(user.cart.totalPrice);
+    const totalPrice = Math.ceil(user.cart.totalPrice);
     const email = user.email;
 
     // create a stripe session 
